@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Array;
-import org.w3c.dom.css.Rect;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -59,19 +58,31 @@ public class Player {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             sinusInput += delta;
             currentAnimation = playerAnimations.get("left");
-            playerX -= speed * delta;
+            float potentialX = hitBox.x - (speed * delta);
+            if (!isCellBlocked(potentialX, hitBox.y) && !isCellBlocked(potentialX, hitBox.y + hitBox.height)) {
+                playerX -= speed * delta;
+            }
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             sinusInput += delta;
             currentAnimation = playerAnimations.get("right");
-            playerX += speed * delta;
+            float potentialX = hitBox.x + (speed * delta) + 1;
+            if (!isCellBlocked(potentialX + hitBox.width, hitBox.y) && !isCellBlocked(potentialX + hitBox.width, hitBox.y + hitBox.height)) {
+                playerX += speed * delta;
+            }
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             sinusInput += delta;
             currentAnimation = playerAnimations.get("up");
-            playerY += speed * delta;
+            float potentialY = hitBox.y + (speed * delta) + 1;
+            if (!isCellBlocked(hitBox.x, potentialY + hitBox.height) && !isCellBlocked(hitBox.x + hitBox.height, potentialY + hitBox.height)) {
+                playerY += speed * delta;
+            }
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             sinusInput += delta;
             currentAnimation = playerAnimations.get("down");
-            playerY -= speed * delta;
+            float potentialY = hitBox.y - (speed * delta);
+            if (!isCellBlocked(hitBox.x, potentialY) && !isCellBlocked(hitBox.x + hitBox.width, potentialY)) {
+                playerY -= speed * delta;
+            }
         }
 
         this.hitBox.setLocation((int) playerX + 4, (int) playerY + 6);
