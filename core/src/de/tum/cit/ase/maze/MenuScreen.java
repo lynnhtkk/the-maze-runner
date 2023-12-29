@@ -1,3 +1,4 @@
+/*
 package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
@@ -13,19 +14,23 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+*/
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
  * It extends the LibGDX Screen class and sets up the UI components for the menu.
- */
+ *//*
+
 public class MenuScreen implements Screen {
 
     private final Stage stage;
 
-    /**
+    */
+/**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
      *
      * @param game The main game class, used to access global resources and methods.
-     */
+     *//*
+
     public MenuScreen(MazeRunnerGame game) {
         var camera = new OrthographicCamera();
         camera.zoom = 1.5f; // Set camera zoom for a closer view
@@ -88,3 +93,4 @@ public class MenuScreen implements Screen {
     public void hide() {
     }
 }
+*/

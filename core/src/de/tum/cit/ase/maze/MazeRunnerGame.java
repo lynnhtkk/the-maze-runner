@@ -59,10 +59,10 @@ public class MazeRunnerGame extends Game {
         backgroundMusic.play();
 
         // got to game screen (directly for now)
-        gotToGame();
+        goToGame();
     }
 
-    private void gotToGame() {
+    private void goToGame() {
         this.setScreen(new GameScreen(this));
     }
 
