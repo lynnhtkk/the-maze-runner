@@ -12,14 +12,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
-import org.w3c.dom.Text;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
 public class MazeRunnerGame extends Game {
-
     // SpriteBatch to render
     private SpriteBatch batch;
 

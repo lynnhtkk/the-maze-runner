@@ -6,8 +6,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Array;
+import org.w3c.dom.css.Rect;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,17 +25,23 @@ public class Player {
     private int playerWidth;
     private int playerHeight;
 
+    private TiledMapTileLayer collisionLayer;
+
+    private Rectangle hitBox;
+
     private Map<String, Animation<TextureRegion>> playerAnimations;
     private Animation<TextureRegion> currentAnimation;
 
     private float sinusInput;
 
-    public Player(float playerX, float playerY) {
+    public Player(float playerX, float playerY, TiledMapTileLayer collisionLayer) {
         this.playerX = playerX;
         this.playerY = playerY;
+        this.collisionLayer = collisionLayer;
         this.speed = 80f;
         this.playerWidth = 16;
         this.playerHeight = 32;
+        this.hitBox = new Rectangle((int) playerX + 4, (int) playerY + 6, (int) (playerWidth * 0.5), (int) (playerHeight * 0.2));
         this.sinusInput = 0f;
         this.spriteSheet = new Texture(Gdx.files.internal("character.png"));
         this.playerAnimations = this.loadAnimations();
@@ -64,6 +73,13 @@ public class Player {
             currentAnimation = playerAnimations.get("down");
             playerY -= speed * delta;
         }
+
+        this.hitBox.setLocation((int) playerX + 4, (int) playerY + 6);
+    }
+
+    private boolean isCellBlocked(float x, float y) {
+        TiledMapTileLayer.Cell cell = collisionLayer.getCell((int) (x / 16), (int) (y / 16));
+        return cell != null && cell.getTile() != null && cell.getTile().getId() == 0;
     }
 
     public void draw (Batch batch) {
@@ -188,6 +204,22 @@ public class Player {
 
     public void setSinusInput(float sinusInput) {
         this.sinusInput = sinusInput;
+    }
+
+    public TiledMapTileLayer getCollisionLayer() {
+        return collisionLayer;
+    }
+
+    public void setCollisionLayer(TiledMapTileLayer collisionLayer) {
+        this.collisionLayer = collisionLayer;
+    }
+
+    public Rectangle getHitBox() {
+        return hitBox;
+    }
+
+    public void setHitBox(Rectangle hitBox) {
+        this.hitBox = hitBox;
     }
 
     public void dispose() {
