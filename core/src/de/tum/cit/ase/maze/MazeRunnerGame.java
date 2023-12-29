@@ -118,15 +118,15 @@ public class MazeRunnerGame extends Game {
             // add floor layer
             // the concept is to increment the maze layer objects' coordinates in both x and y-axis by the number of border tiles
             TiledMapTileLayer floorLayer = new TiledMapTileLayer(this.mapWidth + this.borderTiles * 2, this.mapHeight + this.borderTiles * 2, 16, 16);
-            for (int x = 0; x < this.mapWidth; x++) {
-                for (int y = 0; y < this.mapHeight; y++) {
+            for (int x = 0; x < floorLayer.getWidth(); x++) {
+                for (int y = 0; y < floorLayer.getHeight(); y++) {
                     floorLayer.setCell(x, y, new TiledMapTileLayer.Cell().setTile(tileSet.getTile(6)));
                 }
             }
             tiledMap.getLayers().add(floorLayer);
 
             // add object layer (walls, keys, etc)
-            TiledMapTileLayer objectLayer = new TiledMapTileLayer(this.mapWidth, this.mapHeight, 16, 16);
+            TiledMapTileLayer objectLayer = new TiledMapTileLayer(this.mapWidth + borderTiles, this.mapHeight + borderTiles, 16, 16);
             for (String key : properties.stringPropertyNames()) {
                 if (key.contains(",")) {
                     String[] coordinates = key.split(",");

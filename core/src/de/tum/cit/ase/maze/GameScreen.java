@@ -14,8 +14,11 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private ExtendViewport viewport;
 
+    private Player player;
+
     public GameScreen(MazeRunnerGame game) {
         this.game = game;
+        this.player = new Player(game.getPlayerX(), game.getPlayerY());
         renderer = new OrthogonalTiledMapRenderer(game.getMap());
         camera = new OrthographicCamera();
         camera.zoom = .8f;
@@ -32,11 +35,16 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        camera.position.set(player.getPlayerX(), player.getPlayerY(), 0);
         camera.update();
-        camera.position.set(game.getPlayerX(), game.getPlayerY(), 0);
+        player.update(Gdx.graphics.getDeltaTime(), game.getMapWidth(), game.getMapHeight(), game.getBorderTiles());
 
         renderer.setView(camera);
         renderer.render();
+
+        renderer.getBatch().begin();
+        player.draw(renderer.getBatch());
+        renderer.getBatch().end();
     }
 
     @Override
