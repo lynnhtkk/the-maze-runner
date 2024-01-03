@@ -13,31 +13,41 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class MenuScreen implements Screen {
+public class PauseScreen implements Screen {
 
-    private final Stage stage;
+    private Stage stage;
 
-    public MenuScreen(MazeRunnerGame game) {
+    public PauseScreen(MazeRunnerGame game) {
         OrthographicCamera camera = new OrthographicCamera();
         camera.zoom = 1.5f;
 
         Viewport viewport = new ScreenViewport(camera);
-        stage = new Stage(viewport, game.getBatch());           // Create a stage for UI elements
+        stage = new Stage(viewport, game.getBatch());
 
-        Table table = new Table();      // create a table for layout
-        table.setFillParent(true);      // make the table fill the entire stage
-        stage.addActor(table);          // add the table to the stage
+        Table table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
 
-        // add a label as a title
-        table.add(new Label("Welcome to the Maze Runner", game.getSkin(), "title")).padBottom(80).row();
+        // add title
+        table.add(new Label("Pause Screen", game.getSkin(), "title")).padBottom(80).row();
 
-        // create and add a button to go to the game screen
-        TextButton goToGameButton = new TextButton("Play Game", game.getSkin());
-        table.add(goToGameButton).width(300).row();
-
-        goToGameButton.addListener(new ChangeListener() {
+        // create a button to continue the current game
+        TextButton continueButton = new TextButton("Continue", game.getSkin());
+        table.add(continueButton).width(300).padBottom(10).row();
+        continueButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.goToGame();
+            }
+        });
+
+        // create a button to initiate a new game
+        TextButton newGameButton = new TextButton("New Game", game.getSkin());
+        table.add(newGameButton).width(300).row();
+        newGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setGameState(GameState.NEW_GAME);
                 game.goToGame();
             }
         });
@@ -45,7 +55,6 @@ public class MenuScreen implements Screen {
 
     @Override
     public void show() {
-        // set the input processor to the stage so it can receive input events
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -58,7 +67,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+
     }
 
     @Override
@@ -78,6 +87,6 @@ public class MenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        stage.dispose();
+
     }
 }

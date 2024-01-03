@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 
 import java.io.FileInputStream;
@@ -19,6 +20,17 @@ import java.util.*;
 public class MazeRunnerGame extends Game {
     // SpriteBatch to render
     private SpriteBatch batch;
+
+    // UI Skin
+    private Skin skin;
+
+    // Screens for each stage of the game
+    private MenuScreen menuScreen;
+    private GameScreen gameScreen;
+    private PauseScreen pauseScreen;
+
+    // GameState to determine the current state of the game
+    private GameState gameState;
 
     // initial coordinates for player's spawn point
     private float playerX;
@@ -44,6 +56,7 @@ public class MazeRunnerGame extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
+        skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json"));
 
         // number of tiles around the maze
         // the idea is to increase the maze layer in both x and y-axis
@@ -60,12 +73,30 @@ public class MazeRunnerGame extends Game {
         backgroundMusic.setVolume(0.2f);
         backgroundMusic.play();
 
+        // instantiate screen instances
+        this.menuScreen = new MenuScreen(this);
+        this.pauseScreen = new PauseScreen(this);
+        this.gameScreen = new GameScreen(this);
+
         // got to game screen (directly for now)
-        goToGame();
+        gotoMenu();
     }
 
-    private void goToGame() {
-        this.setScreen(new GameScreen(this));
+    public void gotoMenu() {
+        this.setScreen(menuScreen);
+    }
+
+    public void goToPause() {
+        this.pause();
+        this.setScreen(pauseScreen);
+    }
+
+    public void goToGame() {
+        if (this.gameState == null || this.gameState == GameState.NEW_GAME) {
+            this.gameState = GameState.RUNNING;
+            this.gameScreen = new GameScreen(this);
+        }
+        this.setScreen(gameScreen);
     }
 
     private void loadTileSet() {
@@ -254,8 +285,49 @@ public class MazeRunnerGame extends Game {
         this.mobsPositions = mobsPositions;
     }
 
+    public Skin getSkin() {
+        return skin;
+    }
+
+    public void setSkin(Skin skin) {
+        this.skin = skin;
+    }
+
+    public MenuScreen getMenuScreen() {
+        return menuScreen;
+    }
+
+    public void setMenuScreen(MenuScreen menuScreen) {
+        this.menuScreen = menuScreen;
+    }
+
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
+
+    public void setGameScreen(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
+    }
+
+    public PauseScreen getPauseScreen() {
+        return pauseScreen;
+    }
+
+    public void setPauseScreen(PauseScreen pauseScreen) {
+        this.pauseScreen = pauseScreen;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
     @Override
     public void dispose() {
         batch.dispose();
+        skin.dispose();
     }
 }
