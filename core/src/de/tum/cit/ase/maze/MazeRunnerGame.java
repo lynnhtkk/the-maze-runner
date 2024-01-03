@@ -14,6 +14,8 @@ import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class MazeRunnerGame extends Game {
@@ -23,6 +25,9 @@ public class MazeRunnerGame extends Game {
     // initial coordinates for player's spawn point
     private float playerX;
     private float playerY;
+
+    // location coordinates for dynamic mobs
+    private List<int[]> mobsPositions;
 
     // width and height of the maze
     private int mapWidth;
@@ -45,6 +50,8 @@ public class MazeRunnerGame extends Game {
         // number of tiles around the maze
         // the idea is to increase the maze layer in both x and y-axis
         borderTiles = 20;
+
+        this.mobsPositions = new ArrayList<>();
 
         // load the map
         map = this.loadMap();
@@ -130,15 +137,19 @@ public class MazeRunnerGame extends Game {
                     int x = Integer.parseInt(coordinates[0]) + borderTiles;
                     int y = Integer.parseInt(coordinates[1]) + borderTiles;
                     // player spawn point
-                    if (properties.getProperty(key).equals("1")) {
-                        playerX = x * 16f;
-                        playerY = y * 16f;
-                    }
-                    int tileID = Integer.parseInt(properties.getProperty(key));
+                    if (properties.getProperty(key).equals("4")) {
+                        mobsPositions.add(new int[]{x * 16, y * 16});
+                    } else {
+                        if (properties.getProperty(key).equals("1")) {
+                            playerX = x * 16f;
+                            playerY = y * 16f;
+                        }
+                        int tileID = Integer.parseInt(properties.getProperty(key));
 
-                    TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                    cell.setTile(tileSet.getTile(tileID));
-                    objectLayer.setCell(x, y, cell);
+                        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+                        cell.setTile(tileSet.getTile(tileID));
+                        objectLayer.setCell(x, y, cell);
+                    }
                 }
             }
             tiledMap.getLayers().add(objectLayer);
@@ -210,6 +221,14 @@ public class MazeRunnerGame extends Game {
 
     public void setMap(TiledMap map) {
         this.map = map;
+    }
+
+    public List<int[]> getMobsPositions() {
+        return mobsPositions;
+    }
+
+    public void setMobsPositions(List<int[]> mobsPositions) {
+        this.mobsPositions = mobsPositions;
     }
 
     @Override

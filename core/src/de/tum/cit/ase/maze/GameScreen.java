@@ -9,6 +9,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameScreen implements Screen {
 
     private MazeRunnerGame game;
@@ -18,11 +21,14 @@ public class GameScreen implements Screen {
 
     private Player player;
 
+    private List<Mob> mobs;
+
     private ShapeRenderer shapeRenderer;
 
     public GameScreen(MazeRunnerGame game) {
         this.game = game;
         this.player = new Player(game.getPlayerX(), game.getPlayerY(), (TiledMapTileLayer) game.getMap().getLayers().get(1));
+        this.mobs = spawnMobs(game.getMobsPositions());
         renderer = new OrthogonalTiledMapRenderer(game.getMap());
         camera = new OrthographicCamera();
         camera.zoom = .8f;
@@ -48,13 +54,26 @@ public class GameScreen implements Screen {
         renderer.render();
 
         renderer.getBatch().begin();
+        for (Mob mob : mobs) {
+            mob.update(Gdx.graphics.getDeltaTime());
+            mob.draw(renderer.getBatch());
+        }
         player.draw(renderer.getBatch());
         renderer.getBatch().end();
 
+        /*// render the HitBox of player for debugging purposes
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.rect(player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);
-        shapeRenderer.end();
+        shapeRenderer.end();*/
+    }
+
+    public List<Mob> spawnMobs(List<int[]> mobsPositions) {
+        List<Mob> mobs = new ArrayList<>();
+        for (int[] coordinates : mobsPositions) {
+            mobs.add(new Mob(coordinates[0], coordinates[1]));
+        }
+        return mobs;
     }
 
     @Override
