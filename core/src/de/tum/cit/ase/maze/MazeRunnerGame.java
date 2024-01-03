@@ -14,9 +14,7 @@ import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class MazeRunnerGame extends Game {
     // SpriteBatch to render
@@ -102,6 +100,30 @@ public class MazeRunnerGame extends Game {
         tileSet.putTile(6, tile6);
     }
 
+    private Map<String, Integer> findMapSize(Properties properties) {
+        Map<String, Integer> mapSize = new HashMap<>();
+        if (properties.containsKey("Width") && properties.containsKey("Height")) {
+            mapSize.put("Width", Integer.parseInt(properties.getProperty("Width")));
+            mapSize.put("Height", Integer.parseInt(properties.getProperty("Height")));
+            return mapSize;
+        } else {
+            int mapWidth = Integer.MIN_VALUE;
+            int mapHeight = Integer.MIN_VALUE;
+            for (String key : properties.stringPropertyNames()) {
+                if (key.contains(",")) {
+                    String[] coordinates = key.split(",");
+                    int x = Integer.parseInt(coordinates[0]);
+                    if (x > mapWidth) mapWidth = x;
+                    int y = Integer.parseInt(coordinates[1]);
+                    if (y > mapHeight) mapHeight = y;
+                }
+            }
+            mapSize.put("Width", mapWidth + 1);
+            mapSize.put("Height", mapHeight + 1);
+            return mapSize;
+        }
+    }
+
     private TiledMap loadMap() {
         // load the tile set that we are going to use to construct the maze
         this.loadTileSet();
@@ -111,13 +133,14 @@ public class MazeRunnerGame extends Game {
         // read the properties file
         try {
             Properties properties = new Properties();
-            properties.load(new FileInputStream("/Users/linnhtet/IdeaProjects/fophn2324infun2324projectworkx-g34/maps/level-2.properties"));
+            properties.load(new FileInputStream("/Users/linnhtet/IdeaProjects/fophn2324infun2324projectworkx-g34/maps/level-5.properties"));
 
             // set the width and height of the maze according to the properties file
             // later, we have to check whether the width or height of the maze is given in the file
             // if not, max x = width, max y = height
-            this.mapWidth = Integer.parseInt(properties.getProperty("Width"));
-            this.mapHeight = Integer.parseInt(properties.getProperty("Height"));
+            Map<String, Integer> mapSize = findMapSize(properties);
+            this.mapWidth = mapSize.get("Width");
+            this.mapHeight = mapSize.get("Height");
 
             // add floor layer
             // the concept is to increment the maze layer objects' coordinates in both x and y-axis by the number of border tiles
