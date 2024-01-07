@@ -31,9 +31,10 @@ public class PauseScreen implements Screen {
         // add title
         table.add(new Label("Pause Screen", game.getSkin(), "title")).padBottom(80).row();
 
+        table.defaults().padBottom(10);
         // create a button to continue the current game
         TextButton continueButton = new TextButton("Continue", game.getSkin());
-        table.add(continueButton).width(300).padBottom(10).row();
+        table.add(continueButton).width(300).row();
         continueButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -49,6 +50,17 @@ public class PauseScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 game.setGameState(GameState.NEW_GAME);
                 game.goToGame();
+            }
+        });
+
+        // create a button to initiate a new game
+        TextButton goToMenuButton = new TextButton("Go to Menu", game.getSkin());
+        table.add(goToMenuButton).width(300).row();
+        goToMenuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setGameState(GameState.NEW_GAME);
+                game.gotoMenu();
             }
         });
     }
@@ -87,6 +99,6 @@ public class PauseScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }

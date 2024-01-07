@@ -31,14 +31,26 @@ public class MenuScreen implements Screen {
         // add a label as a title
         table.add(new Label("Welcome to the Maze Runner", game.getSkin(), "title")).padBottom(80).row();
 
+        table.defaults().padBottom(10);
+
         // create and add a button to go to the game screen
         TextButton goToGameButton = new TextButton("Play Game", game.getSkin());
         table.add(goToGameButton).width(300).row();
-
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.goToGame();
+            }
+        });
+
+        // create and add a button to go to the game screen
+        TextButton exitButton = new TextButton("Exit Game", game.getSkin());
+        table.add(exitButton).width(300).row();
+
+        exitButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.exit();
             }
         });
     }
