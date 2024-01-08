@@ -37,7 +37,7 @@ public class Player {
         this.playerX = playerX;
         this.playerY = playerY;
         this.collisionLayer = collisionLayer;
-        this.speed = 80f;
+        this.speed = 60f;
         this.playerWidth = 16;
         this.playerHeight = 32;
         this.hitBox = new Rectangle((int) playerX + 4, (int) playerY + 6, (int) (playerWidth * 0.5), (int) (playerHeight * 0.2));
