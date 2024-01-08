@@ -3,6 +3,7 @@ package de.tum.cit.ase.maze;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -52,11 +53,11 @@ public class GameScreen implements Screen {
 
     private ShapeRenderer shapeRenderer;
 
-    public GameScreen(MazeRunnerGame game) {
+    public GameScreen(MazeRunnerGame game, FileHandle mapLocation) {
         borderTiles = 20;
         mobsPositions = new ArrayList<>();
         this.game = game;
-        map = loadMap();
+        map = loadMap(mapLocation);
         mobs = spawnMobs(mobsPositions);
         this.player = new Player(playerX, playerY, (TiledMapTileLayer) map.getLayers().get(1));
         renderer = new OrthogonalTiledMapRenderer(map);
@@ -156,7 +157,7 @@ public class GameScreen implements Screen {
         }
     }
 
-    private TiledMap loadMap() {
+    private TiledMap loadMap(FileHandle mapLocation) {
         // load the tile set that we are going to use to construct the maze
         this.loadTileSet();
         TiledMap tiledMap = new TiledMap();
@@ -165,7 +166,7 @@ public class GameScreen implements Screen {
         // read the properties file
         try {
             Properties properties = new Properties();
-            properties.load(new FileInputStream("/Users/linnhtet/IdeaProjects/fophn2324infun2324projectworkx-g34/maps/level-5.properties"));
+            properties.load(new FileInputStream(String.valueOf(mapLocation)));
 
             // set the width and height of the maze according to the properties file
             // later, we have to check whether the width or height of the maze is given in the file

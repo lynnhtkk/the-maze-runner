@@ -3,6 +3,7 @@ package de.tum.cit.ase.maze;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
@@ -22,8 +23,12 @@ public class MazeRunnerGame extends Game {
     // GameState to determine the current state of the game
     private GameState gameState;
 
+    private NativeFileChooser fileChooser;
+    private FileHandle fileHandle;
+
     public MazeRunnerGame(NativeFileChooser fileChooser) {
         super();
+        this.fileChooser = fileChooser;
     }
 
     @Override
@@ -40,7 +45,6 @@ public class MazeRunnerGame extends Game {
         // instantiate screen instances
         this.menuScreen = new MenuScreen(this);
         this.pauseScreen = new PauseScreen(this);
-        this.gameScreen = new GameScreen(this);
 
         // got to game screen (directly for now)
         gotoMenu();
@@ -58,7 +62,7 @@ public class MazeRunnerGame extends Game {
     public void goToGame() {
         if (this.gameState == null || this.gameState == GameState.NEW_GAME) {
             this.gameState = GameState.RUNNING;
-            this.gameScreen = new GameScreen(this);
+            this.gameScreen = new GameScreen(this, fileHandle);
         }
         this.setScreen(gameScreen);
     }
@@ -109,6 +113,22 @@ public class MazeRunnerGame extends Game {
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+    }
+
+    public NativeFileChooser getFileChooser() {
+        return fileChooser;
+    }
+
+    public void setFileChooser(NativeFileChooser fileChooser) {
+        this.fileChooser = fileChooser;
+    }
+
+    public FileHandle getFileHandle() {
+        return fileHandle;
+    }
+
+    public void setFileHandle(FileHandle fileHandle) {
+        this.fileHandle = fileHandle;
     }
 
     @Override

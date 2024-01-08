@@ -2,6 +2,7 @@ package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -12,6 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
+
+import java.lang.annotation.Native;
 
 public class MenuScreen implements Screen {
 
@@ -39,7 +44,24 @@ public class MenuScreen implements Screen {
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.goToGame();
+                NativeFileChooserConfiguration conf = mapChooserConfiguration();
+                game.getFileChooser().chooseFile(conf, new NativeFileChooserCallback() {
+                    @Override
+                    public void onFileChosen(FileHandle file) {
+                        game.setFileHandle(file);
+                        game.goToGame();
+                    }
+
+                    @Override
+                    public void onCancellation() {
+
+                    }
+
+                    @Override
+                    public void onError(Exception exception) {
+
+                    }
+                });
             }
         });
 
@@ -86,6 +108,18 @@ public class MenuScreen implements Screen {
     @Override
     public void hide() {
 
+    }
+
+    public NativeFileChooserConfiguration mapChooserConfiguration() {
+        NativeFileChooserConfiguration conf = new NativeFileChooserConfiguration();
+        conf.directory = Gdx.files.absolute(System.getProperty("user.dir"));
+        conf.nameFilter = (dir, name) -> name.endsWith(".properties");
+        conf.title = "Choose Map";
+        return conf;
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 
     @Override
