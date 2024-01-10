@@ -16,8 +16,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
 
-import java.lang.annotation.Native;
-
 public class MenuScreen implements Screen {
 
     private final Stage stage;

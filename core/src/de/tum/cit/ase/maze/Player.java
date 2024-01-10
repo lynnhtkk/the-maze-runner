@@ -26,7 +26,14 @@ public class Player {
 
     private TiledMapTileLayer collisionLayer;
 
+    private Rectangle collisionBox;
     private Rectangle hitBox;
+
+    private boolean isInvincible;
+    private float invincibility_timer;
+    private final float INVINCIBILITY_FRAME;
+
+    private int playerLives;
 
     private Map<String, Animation<TextureRegion>> playerAnimations;
     private Animation<TextureRegion> currentAnimation;
@@ -37,10 +44,15 @@ public class Player {
         this.playerX = playerX;
         this.playerY = playerY;
         this.collisionLayer = collisionLayer;
-        this.speed = 60f;
+        this.speed = 70f;
         this.playerWidth = 16;
         this.playerHeight = 32;
-        this.hitBox = new Rectangle((int) playerX + 4, (int) playerY + 6, (int) (playerWidth * 0.5), (int) (playerHeight * 0.2));
+        this.playerLives = 3;
+        isInvincible = false;
+        invincibility_timer = 0f;
+        INVINCIBILITY_FRAME = 2f;
+        this.collisionBox = new Rectangle((int) playerX + 4, (int) playerY + 6, (int) (playerWidth * 0.5), (int) (playerHeight * 0.2));
+        this.hitBox = new Rectangle((int) playerX + 3, (int) playerY + 8, 10, 15);
         this.sinusInput = 0f;
         this.spriteSheet = new Texture(Gdx.files.internal("character.png"));
         this.playerAnimations = this.loadAnimations();
@@ -48,6 +60,13 @@ public class Player {
     }
 
     public void update(float delta, int mapWidth, int mapHeight, int borderTiles) {
+        // check to see if the player is invincible, if invincible, count down the timer
+        if (isInvincible) {
+            invincibility_timer -= delta;
+            if (invincibility_timer <= 0) {
+                isInvincible = false;
+            }
+        }
         // restrict so that the player can't go outside the maze walls
         if (playerX < borderTiles * 16) playerX = borderTiles * 16;
         if (playerX > (mapHeight + borderTiles - 1) * 16) playerX = (mapHeight + borderTiles - 1) * 16;
@@ -58,34 +77,35 @@ public class Player {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             sinusInput += delta;
             currentAnimation = playerAnimations.get("left");
-            float potentialX = hitBox.x - (speed * delta);
-            if (!isCellBlocked(potentialX, hitBox.y) && !isCellBlocked(potentialX, hitBox.y + hitBox.height)) {
+            float potentialX = collisionBox.x - (speed * delta);
+            if (!isCellBlocked(potentialX, collisionBox.y) && !isCellBlocked(potentialX, collisionBox.y + collisionBox.height)) {
                 playerX -= speed * delta;
             }
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             sinusInput += delta;
             currentAnimation = playerAnimations.get("right");
-            float potentialX = hitBox.x + (speed * delta) + 1;
-            if (!isCellBlocked(potentialX + hitBox.width, hitBox.y) && !isCellBlocked(potentialX + hitBox.width, hitBox.y + hitBox.height)) {
+            float potentialX = collisionBox.x + (speed * delta) + 1;
+            if (!isCellBlocked(potentialX + collisionBox.width, collisionBox.y) && !isCellBlocked(potentialX + collisionBox.width, collisionBox.y + collisionBox.height)) {
                 playerX += speed * delta;
             }
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             sinusInput += delta;
             currentAnimation = playerAnimations.get("up");
-            float potentialY = hitBox.y + (speed * delta) + 1;
-            if (!isCellBlocked(hitBox.x, potentialY + hitBox.height) && !isCellBlocked(hitBox.x + hitBox.height, potentialY + hitBox.height)) {
+            float potentialY = collisionBox.y + (speed * delta) + 1;
+            if (!isCellBlocked(collisionBox.x, potentialY + collisionBox.height) && !isCellBlocked(collisionBox.x + collisionBox.height, potentialY + collisionBox.height)) {
                 playerY += speed * delta;
             }
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             sinusInput += delta;
             currentAnimation = playerAnimations.get("down");
-            float potentialY = hitBox.y - (speed * delta);
-            if (!isCellBlocked(hitBox.x, potentialY) && !isCellBlocked(hitBox.x + hitBox.width, potentialY)) {
+            float potentialY = collisionBox.y - (speed * delta);
+            if (!isCellBlocked(collisionBox.x, potentialY) && !isCellBlocked(collisionBox.x + collisionBox.width, potentialY)) {
                 playerY -= speed * delta;
             }
         }
 
-        this.hitBox.setLocation((int) playerX + 4, (int) playerY + 6);
+        this.collisionBox.setLocation((int) playerX + 4, (int) playerY + 6);
+        this.hitBox.setLocation((int) playerX + 3, (int) playerY + 8);
     }
 
     private boolean isCellBlocked(float x, float y) {
@@ -143,6 +163,14 @@ public class Player {
         walkFrames.clear();
 
         return animationMap;
+    }
+
+    public void takeDamage() {
+        if (!isInvincible) {
+            playerLives--;
+            isInvincible = true;
+            invincibility_timer = INVINCIBILITY_FRAME;
+        }
     }
 
     public Texture getSpriteSheet() {
@@ -225,12 +253,28 @@ public class Player {
         this.collisionLayer = collisionLayer;
     }
 
+    public Rectangle getCollisionBox() {
+        return collisionBox;
+    }
+
+    public void setCollisionBox(Rectangle collisionBox) {
+        this.collisionBox = collisionBox;
+    }
+
     public Rectangle getHitBox() {
         return hitBox;
     }
 
     public void setHitBox(Rectangle hitBox) {
         this.hitBox = hitBox;
+    }
+
+    public int getPlayerLives() {
+        return playerLives;
+    }
+
+    public void setPlayerLives(int playerLives) {
+        this.playerLives = playerLives;
     }
 
     public void dispose() {

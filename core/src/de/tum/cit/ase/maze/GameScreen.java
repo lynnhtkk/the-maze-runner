@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,7 +15,11 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -53,6 +58,10 @@ public class GameScreen implements Screen {
 
     private ShapeRenderer shapeRenderer;
 
+    // dummy HUD
+    private Stage stage;
+    private Label playerLivesLabel;
+
     public GameScreen(MazeRunnerGame game, FileHandle mapLocation) {
         borderTiles = 20;
         mobsPositions = new ArrayList<>();
@@ -65,6 +74,16 @@ public class GameScreen implements Screen {
         camera.zoom = .8f;
         viewport = new ExtendViewport(500, 500, camera);
         shapeRenderer = new ShapeRenderer();
+
+        stage = new Stage(new ScreenViewport(new OrthographicCamera()), game.getBatch());
+
+        Table table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
+
+        table.top().left();
+        playerLivesLabel = new Label("", game.getSkin());
+        table.add(playerLivesLabel).pad(10);
     }
 
     @Override
@@ -86,19 +105,31 @@ public class GameScreen implements Screen {
         renderer.setView(camera);
         renderer.render();
 
+        // to render the HitBoxes of player and mobs for debugging purposes
+        // start of shapeRenderer
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
         renderer.getBatch().begin();
         for (Mob mob : mobs) {
             mob.update(Gdx.graphics.getDeltaTime());
             mob.draw(renderer.getBatch());
+            shapeRenderer.rect(mob.getHitBox().x, mob.getHitBox().y, mob.getHitBox().width, mob.getHitBox().height);
+            // check for collision between mobs and player
+            if (mob.getHitBox().intersects(player.getHitBox())) {
+                player.takeDamage();
+            }
         }
         player.draw(renderer.getBatch());
         renderer.getBatch().end();
 
-        // render the HitBox of player for debugging purposes
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.rect(player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);
         shapeRenderer.end();
+        // end of shapeRenderer
+
+        playerLivesLabel.setText("Player's Health: " + player.getPlayerLives());
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.draw();
     }
 
     private void loadTileSet() {

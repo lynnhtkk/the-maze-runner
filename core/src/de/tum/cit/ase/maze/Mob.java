@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
+import java.awt.*;
+
 public class Mob {
 
     // mob's locations in X and Y-axis
@@ -16,6 +18,9 @@ public class Mob {
     // sinusInput to update animation Frame
     private float sinusInput;
 
+    // hitBox for mob
+    private Rectangle hitBox;
+
     private Texture spriteSheet;
     private Animation<TextureRegion> animation;
 
@@ -23,6 +28,7 @@ public class Mob {
         this.x = x;
         this.y = y;
         sinusInput = 0f;
+        hitBox = new Rectangle((int) x + 4, (int) y + 6, 8, 6);
         spriteSheet = new Texture(Gdx.files.internal("mobs.png"));
         loadAnimations();
     }
@@ -44,6 +50,7 @@ public class Mob {
 
     public void update(float delta) {
         sinusInput += delta;
+        hitBox.setLocation((int) x + 4, (int) y + 6);
     }
 
     public void draw(Batch batch) {
@@ -94,6 +101,14 @@ public class Mob {
 
     public void setAnimation(Animation<TextureRegion> animation) {
         this.animation = animation;
+    }
+
+    public Rectangle getHitBox() {
+        return hitBox;
+    }
+
+    public void setHitBox(Rectangle hitBox) {
+        this.hitBox = hitBox;
     }
 
     public void dispose() {
