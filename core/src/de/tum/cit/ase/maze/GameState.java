@@ -2,5 +2,6 @@ package de.tum.cit.ase.maze;
 
 public enum GameState {
     RUNNING,
-    NEW_GAME
+    NEW_GAME,
+    GAME_OVER
 }

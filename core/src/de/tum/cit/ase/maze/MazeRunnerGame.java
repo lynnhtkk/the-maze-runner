@@ -19,6 +19,7 @@ public class MazeRunnerGame extends Game {
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
     private PauseScreen pauseScreen;
+    private GameOverScreen gameOverScreen;
 
     // GameState to determine the current state of the game
     private GameState gameState;
@@ -45,6 +46,7 @@ public class MazeRunnerGame extends Game {
         // instantiate screen instances
         this.menuScreen = new MenuScreen(this);
         this.pauseScreen = new PauseScreen(this);
+        this.gameOverScreen = new GameOverScreen(this);
 
         // got to game screen (directly for now)
         gotoMenu();
@@ -60,11 +62,15 @@ public class MazeRunnerGame extends Game {
     }
 
     public void goToGame() {
-        if (this.gameState == null || this.gameState == GameState.NEW_GAME) {
+        if (this.gameState == null || this.gameState == GameState.NEW_GAME || this.gameState == GameState.GAME_OVER) {
             this.gameState = GameState.RUNNING;
             this.gameScreen = new GameScreen(this, fileHandle);
         }
         this.setScreen(gameScreen);
+    }
+
+    public void goToGameOver() {
+        this.setScreen(gameOverScreen);
     }
 
     public SpriteBatch getBatch() {

@@ -100,6 +100,12 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) game.goToPause();
 
+        // check if the player loses all his lives
+        if (player.getPlayerLives() <= 0) {
+            game.setGameState(GameState.GAME_OVER);
+            game.goToGameOver();
+        }
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
