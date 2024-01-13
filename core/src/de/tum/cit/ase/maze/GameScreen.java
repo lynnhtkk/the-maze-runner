@@ -98,6 +98,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        // press ESC to pause the game
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) game.goToPause();
 
         // check if the player loses all his lives
@@ -125,8 +126,8 @@ public class GameScreen implements Screen {
         for (Mob mob : mobs) {
             mob.update(Gdx.graphics.getDeltaTime());
             mob.draw(renderer.getBatch());
-            /*shapeRenderer.setColor(Color.WHITE);
-            shapeRenderer.rect(mob.getHitBox().x, mob.getHitBox().y, mob.getHitBox().width, mob.getHitBox().height);*/
+            shapeRenderer.setColor(Color.WHITE);
+            shapeRenderer.rect(mob.getHitBox().x, mob.getHitBox().y, mob.getHitBox().width, mob.getHitBox().height);
             // check for collision between mobs and player
             if (!player.isInvincible() && mob.getHitBox().intersects(player.getHitBox())) {
                 player.takeDamage();
@@ -136,9 +137,9 @@ public class GameScreen implements Screen {
         player.draw(renderer.getBatch());
         renderer.getBatch().end();
 
-        /*shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.rect(player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);
-        shapeRenderer.setColor(Color.RED);
+        /*shapeRenderer.setColor(Color.RED);
         shapeRenderer.rect(player.getCollisionBox().x, player.getCollisionBox().y, player.getCollisionBox().width, player.getCollisionBox().height);
         shapeRenderer.setColor(Color.GREEN);
         shapeRenderer.rect(player.getPlayerX(), player.getPlayerY(), 16, 32);*/
@@ -241,9 +242,11 @@ public class GameScreen implements Screen {
                     String[] coordinates = key.split(",");
                     int x = Integer.parseInt(coordinates[0]) + borderTiles;
                     int y = Integer.parseInt(coordinates[1]) + borderTiles;
-                    // player spawn point
+                    // mobs and player spawn points
                     if (properties.getProperty(key).equals("4")) {
-                        mobsPositions.add(new int[]{x * 16, y * 16});
+                        mobsPositions.add(new int[]{4, x * 16, y * 16});
+                    } else if (properties.getProperty(key).equals("3")) {
+                        mobsPositions.add(new int[]{3, x * 16, y * 16});
                     } else {
                         if (properties.getProperty(key).equals("1")) {
                             playerX = x * 16f;
@@ -267,7 +270,11 @@ public class GameScreen implements Screen {
     private List<Mob> spawnMobs(List<int[]> mobsPositions) {
         List<Mob> mobs = new ArrayList<>();
         for (int[] coordinates : mobsPositions) {
-            mobs.add(new Mob(coordinates[0], coordinates[1]));
+            if (coordinates[0] == 4) {
+                mobs.add(new DynamicMob(coordinates[1], coordinates[2]));
+            } else if (coordinates[0] == 3) {
+                mobs.add(new StaticMob(coordinates[1], coordinates[2]));
+            }
         }
         return mobs;
     }
