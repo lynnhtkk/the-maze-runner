@@ -21,9 +21,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 public class GameScreen implements Screen {
 
@@ -62,6 +64,8 @@ public class GameScreen implements Screen {
     private Stage stage;
     private Label playerLivesLabel;
 
+    private Rectangle spriteBox;
+
     public GameScreen(MazeRunnerGame game, FileHandle mapLocation) {
         borderTiles = 20;
         mobsPositions = new ArrayList<>();
@@ -74,6 +78,7 @@ public class GameScreen implements Screen {
         camera.zoom = .8f;
         viewport = new ExtendViewport(500, 500, camera);
         shapeRenderer = new ShapeRenderer();
+        spriteBox = new Rectangle((int) playerX, (int) playerY, 16, 32);
 
         stage = new Stage(new ScreenViewport(new OrthographicCamera()), game.getBatch());
 
@@ -114,16 +119,23 @@ public class GameScreen implements Screen {
         for (Mob mob : mobs) {
             mob.update(Gdx.graphics.getDeltaTime());
             mob.draw(renderer.getBatch());
-            shapeRenderer.rect(mob.getHitBox().x, mob.getHitBox().y, mob.getHitBox().width, mob.getHitBox().height);
+            /*shapeRenderer.setColor(Color.WHITE);
+            shapeRenderer.rect(mob.getHitBox().x, mob.getHitBox().y, mob.getHitBox().width, mob.getHitBox().height);*/
             // check for collision between mobs and player
-            if (mob.getHitBox().intersects(player.getHitBox())) {
+            if (!player.isInvincible() && mob.getHitBox().intersects(player.getHitBox())) {
                 player.takeDamage();
+                player.applyKnockBack(mob, .9f);
             }
         }
         player.draw(renderer.getBatch());
         renderer.getBatch().end();
 
+        /*shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.rect(player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(player.getCollisionBox().x, player.getCollisionBox().y, player.getCollisionBox().width, player.getCollisionBox().height);
+        shapeRenderer.setColor(Color.GREEN);
+        shapeRenderer.rect(player.getPlayerX(), player.getPlayerY(), 16, 32);*/
         shapeRenderer.end();
         // end of shapeRenderer
 

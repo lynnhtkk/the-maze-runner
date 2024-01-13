@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import java.awt.*;
@@ -33,6 +34,11 @@ public class Player {
     private float invincibility_timer;
     private final float INVINCIBILITY_FRAME;
 
+    private Vector2 knockBackVector;
+    private float knockBackTime;
+    private final float KNOCKBACKDURATION;
+    private boolean isBeingKnockedBack;
+
     private int playerLives;
 
     private Map<String, Animation<TextureRegion>> playerAnimations;
@@ -44,15 +50,18 @@ public class Player {
         this.playerX = playerX;
         this.playerY = playerY;
         this.collisionLayer = collisionLayer;
-        this.speed = 70f;
+        this.speed = 80f;
         this.playerWidth = 16;
         this.playerHeight = 32;
         this.playerLives = 3;
         isInvincible = false;
         invincibility_timer = 0f;
         INVINCIBILITY_FRAME = 2f;
+        knockBackTime = 0f;
+        KNOCKBACKDURATION = 1f;
+        isBeingKnockedBack = false;
         this.collisionBox = new Rectangle((int) playerX + 4, (int) playerY + 6, (int) (playerWidth * 0.5), (int) (playerHeight * 0.2));
-        this.hitBox = new Rectangle((int) playerX + 3, (int) playerY + 8, 10, 15);
+        this.hitBox = new Rectangle((int) playerX + 4, (int) playerY + 8, 8, 15);
         this.sinusInput = 0f;
         this.spriteSheet = new Texture(Gdx.files.internal("character.png"));
         this.playerAnimations = this.loadAnimations();
@@ -60,6 +69,36 @@ public class Player {
     }
 
     public void update(float delta, int mapWidth, int mapHeight, int borderTiles) {
+        // check to see if the player is knocked back (took damage) and apply knock back if it does
+        if (isBeingKnockedBack) {
+            // count down the knock back timer
+            knockBackTime -= delta;
+            if (knockBackTime <= 0) {
+                isBeingKnockedBack = false;
+            } else {
+                // to get the slowly knocked back effect
+                float knockBackFactor = knockBackTime / KNOCKBACKDURATION;
+                Vector2 knockBackThisFrame = knockBackVector.cpy().scl(knockBackFactor);
+
+                // to check collision and to make sure that the player doesn't get knocked back to the walls
+                float potentialX = this.hitBox.x + knockBackThisFrame.x + 1;
+                float potentialY = this.hitBox.y + knockBackThisFrame.y + 1;
+                if (!isCellBlocked(potentialX, potentialY) && !isCellBlocked(potentialX + collisionBox.width, potentialY)
+                        && !isCellBlocked(potentialX, potentialY + collisionBox.height) && !isCellBlocked(potentialX + collisionBox.width, potentialY + collisionBox.height)) {
+                    this.playerX += knockBackThisFrame.x;
+                    this.playerY += knockBackThisFrame.y;
+                } else {
+                    // if the player collides with the wall, reposition the player slightly outside the wall on the Y-axis and stop the knock back effect
+                    TiledMapTileLayer.Cell cell = collisionLayer.getCell((int) (potentialX / 16), (int) (potentialY / 16));
+                    if (cell != null) {
+                        float cellUpperBound = (int)(potentialY / 16) * 16 + 16;
+                        this.playerY = cellUpperBound - 6;      // collision box Y is 6 pixels above the actual player's Y position
+                    }
+                    isBeingKnockedBack = false;
+                }
+            }
+        }
+
         // check to see if the player is invincible, if invincible, count down the timer
         if (isInvincible) {
             invincibility_timer -= delta;
@@ -67,6 +106,7 @@ public class Player {
                 isInvincible = false;
             }
         }
+
         // restrict so that the player can't go outside the maze walls
         if (playerX < borderTiles * 16) playerX = borderTiles * 16;
         if (playerX > (mapHeight + borderTiles - 1) * 16) playerX = (mapHeight + borderTiles - 1) * 16;
@@ -105,7 +145,7 @@ public class Player {
         }
 
         this.collisionBox.setLocation((int) playerX + 4, (int) playerY + 6);
-        this.hitBox.setLocation((int) playerX + 3, (int) playerY + 8);
+        this.hitBox.setLocation((int) playerX + 4, (int) playerY + 8);
     }
 
     private boolean isCellBlocked(float x, float y) {
@@ -171,6 +211,20 @@ public class Player {
             isInvincible = true;
             invincibility_timer = INVINCIBILITY_FRAME;
         }
+    }
+
+    public void applyKnockBack(Mob mob, float knockBackDistance) {
+        knockBackVector = new Vector2(
+                this.playerX - mob.getX(),
+                this.playerY - mob.getY()
+        );
+
+        knockBackVector.nor();
+        knockBackVector.scl(knockBackDistance);
+
+        // set the knockBackTimer
+        knockBackTime = KNOCKBACKDURATION;
+        isBeingKnockedBack = true;
     }
 
     public Texture getSpriteSheet() {
@@ -275,6 +329,54 @@ public class Player {
 
     public void setPlayerLives(int playerLives) {
         this.playerLives = playerLives;
+    }
+
+    public boolean isInvincible() {
+        return isInvincible;
+    }
+
+    public void setInvincible(boolean invincible) {
+        isInvincible = invincible;
+    }
+
+    public float getInvincibility_timer() {
+        return invincibility_timer;
+    }
+
+    public void setInvincibility_timer(float invincibility_timer) {
+        this.invincibility_timer = invincibility_timer;
+    }
+
+    public float getINVINCIBILITY_FRAME() {
+        return INVINCIBILITY_FRAME;
+    }
+
+    public Vector2 getKnockBackVector() {
+        return knockBackVector;
+    }
+
+    public void setKnockBackVector(Vector2 knockBackVector) {
+        this.knockBackVector = knockBackVector;
+    }
+
+    public float getKnockBackTime() {
+        return knockBackTime;
+    }
+
+    public void setKnockBackTime(float knockBackTime) {
+        this.knockBackTime = knockBackTime;
+    }
+
+    public float getKNOCKBACKDURATION() {
+        return KNOCKBACKDURATION;
+    }
+
+    public boolean isBeingKnockedBack() {
+        return isBeingKnockedBack;
+    }
+
+    public void setBeingKnockedBack(boolean beingKnockedBack) {
+        isBeingKnockedBack = beingKnockedBack;
     }
 
     public void dispose() {
