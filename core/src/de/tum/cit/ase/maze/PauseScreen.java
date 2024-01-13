@@ -52,7 +52,7 @@ public class PauseScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.setGameState(GameState.NEW_GAME);
-                NativeFileChooserConfiguration conf = mapChooserConfiguration();
+                NativeFileChooserConfiguration conf = FileChooserHelper.mapChooserConfiguration();
                 game.getFileChooser().chooseFile(conf, new NativeFileChooserCallback() {
                     @Override
                     public void onFileChosen(FileHandle file) {
@@ -115,14 +115,6 @@ public class PauseScreen implements Screen {
     @Override
     public void hide() {
 
-    }
-
-    public NativeFileChooserConfiguration mapChooserConfiguration() {
-        NativeFileChooserConfiguration conf = new NativeFileChooserConfiguration();
-        conf.directory = Gdx.files.absolute(System.getProperty("user.dir"));
-        conf.nameFilter = (dir, name) -> name.endsWith(".properties");
-        conf.title = "Choose Map";
-        return conf;
     }
 
     public Stage getStage() {
