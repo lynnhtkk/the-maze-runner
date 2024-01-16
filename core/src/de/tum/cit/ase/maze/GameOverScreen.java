@@ -32,8 +32,9 @@ public class GameOverScreen implements Screen {
         stage.addActor(table);
 
         // add a label
-        table.add(new Label("Game Over!", game.getSkin(), "title")).row();
+        table.add(new Label("Game Over!", game.getSkin(), "title")).padBottom(80).row();
 
+        table.defaults().padBottom(10);
         // create and add Play Again Button
         TextButton playAgainButton = new TextButton("Play Again", game.getSkin());
         table.add(playAgainButton).width(400).row();

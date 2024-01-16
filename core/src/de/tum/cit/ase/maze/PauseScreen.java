@@ -45,6 +45,17 @@ public class PauseScreen implements Screen {
             }
         });
 
+        // create a button to continue the current game
+        TextButton restartLevelButton = new TextButton("Restart", game.getSkin());
+        table.add(restartLevelButton).width(300).row();
+        restartLevelButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setGameState(GameState.NEW_GAME);
+                game.goToGame();
+            }
+        });
+
         // create a button to initiate a new game
         TextButton newGameButton = new TextButton("New Game", game.getSkin());
         table.add(newGameButton).width(300).row();

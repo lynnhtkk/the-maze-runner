@@ -37,9 +37,9 @@ public class StaticMob extends Mob {
         // to check which frame is currently rendered. change the size of hitbox according to it. (fire released at frame 9)
         int frameIndex = (int) ((super.stateTime % (.2f * 14)) / .2f);
         if (frameIndex == 9) {
-            super.getHitBox().height = 16;
+            super.getHitBox().height = 12;
         } else {
-            super.getHitBox().height = 10;
+            super.getHitBox().height = 0;
         }
         super.getHitBox().setLocation((int) super.getX(), (int) super.getY());
     }

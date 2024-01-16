@@ -35,6 +35,7 @@ public class VictoryScreen implements Screen {
         table.add(new Label("Victory!", game.getSkin(), "title")).padBottom(80).row();
 
         table.defaults().padBottom(10);
+
         // create a button to replay the current map
         TextButton playAgainButton = new TextButton("Play Again", game.getSkin());
         table.add(playAgainButton).width(400).row();

@@ -128,6 +128,7 @@ public class Player {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             stateTime += delta;
             currentAnimation = playerAnimations.get("left");
+            hitBox.height = 15;
             float potentialX = collisionBox.x - (speed * delta);
             if (!isCellBlocked(potentialX, collisionBox.y) && !isCellBlocked(potentialX, collisionBox.y + collisionBox.height)) {
                 playerX -= speed * delta;
@@ -135,6 +136,7 @@ public class Player {
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             stateTime += delta;
             currentAnimation = playerAnimations.get("right");
+            hitBox.height = 15;
             float potentialX = collisionBox.x + (speed * delta) + 1;
             if (!isCellBlocked(potentialX + collisionBox.width, collisionBox.y) && !isCellBlocked(potentialX + collisionBox.width, collisionBox.y + collisionBox.height)) {
                 playerX += speed * delta;
@@ -142,6 +144,7 @@ public class Player {
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             stateTime += delta;
             currentAnimation = playerAnimations.get("up");
+            hitBox.height = 10;
             float potentialY = collisionBox.y + (speed * delta) + 1;
             if (!isCellBlocked(collisionBox.x, potentialY + collisionBox.height) && !isCellBlocked(collisionBox.x + collisionBox.height, potentialY + collisionBox.height)) {
                 playerY += speed * delta;
@@ -149,6 +152,7 @@ public class Player {
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             stateTime += delta;
             currentAnimation = playerAnimations.get("down");
+            hitBox.height = 15;
             float potentialY = collisionBox.y - (speed * delta);
             if (!isCellBlocked(collisionBox.x, potentialY) && !isCellBlocked(collisionBox.x + collisionBox.width, potentialY)) {
                 playerY -= speed * delta;

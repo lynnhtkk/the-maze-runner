@@ -178,9 +178,9 @@ public class GameScreen implements Screen {
         renderer.getBatch().end();
 
         /*shapeRenderer.rect(player.getCollisionBox().x, player.getCollisionBox().y, player.getCollisionBox().width, player.getCollisionBox().height);
+        shapeRenderer.rect(player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);
         shapeRenderer.rect(key.getHitBox().x, key.getHitBox().y, key.getHitBox().width, key.getHitBox().height);
         shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.rect(player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.setColor(Color.GREEN);
         shapeRenderer.rect(player.getPlayerX(), player.getPlayerY(), 16, 32);*/
