@@ -84,7 +84,7 @@ public class GameScreen implements Screen {
         this.player = new Player(playerX, playerY, (TiledMapTileLayer) map.getLayers().get(1));
         renderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();
-        camera.zoom = .8f;
+        camera.zoom = .6f;
         viewport = new ExtendViewport(500, 500, camera);
         shapeRenderer = new ShapeRenderer();
         spriteBox = new Rectangle((int) playerX, (int) playerY, 16, 32);
