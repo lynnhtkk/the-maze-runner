@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.Array;
 
 public class DynamicMob extends Mob {
 
-    private float sinusInput;
     private Animation<TextureRegion> animation;
     private Texture spriteSheet;
 
@@ -34,27 +33,19 @@ public class DynamicMob extends Mob {
 
     @Override
     public void update(float delta) {
-        sinusInput += delta;
+        super.stateTime += delta;
         super.getHitBox().setLocation((int) super.getX() + 4, (int) super.getY() + 6);
     }
 
     @Override
     public void draw(Batch batch) {
         batch.draw(
-                animation.getKeyFrame(sinusInput, true),
+                animation.getKeyFrame(super.stateTime, true),
                 super.getX(),
                 super.getY(),
                 16,
                 16
         );
-    }
-
-    public float getSinusInput() {
-        return sinusInput;
-    }
-
-    public void setSinusInput(float sinusInput) {
-        this.sinusInput = sinusInput;
     }
 
     public Animation<TextureRegion> getAnimation() {

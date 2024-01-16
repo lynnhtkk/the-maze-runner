@@ -6,14 +6,16 @@ import java.awt.*;
 
 public abstract class Mob {
 
-    private float x;
-    private float y;
+    protected float x;
+    protected float y;
+    protected float stateTime;
 
     private Rectangle hitBox;
 
     public Mob(float x, float y, int hitBoxWidth, int hitBoxHeight) {
         this.x = x;
         this.y = y;
+        stateTime = 0f;
         hitBox = new Rectangle((int) x, (int) y, hitBoxWidth, hitBoxHeight);
     }
 
@@ -35,6 +37,14 @@ public abstract class Mob {
 
     public void setY(float y) {
         this.y = y;
+    }
+
+    public float getStateTime() {
+        return stateTime;
+    }
+
+    public void setStateTime(float stateTime) {
+        this.stateTime = stateTime;
     }
 
     public Rectangle getHitBox() {

@@ -41,10 +41,12 @@ public class Player {
 
     private int playerLives;
 
+    private boolean hasKey;
+
     private Map<String, Animation<TextureRegion>> playerAnimations;
     private Animation<TextureRegion> currentAnimation;
 
-    private float sinusInput;
+    private float stateTime;
 
     public Player(float playerX, float playerY, TiledMapTileLayer collisionLayer) {
         this.playerX = playerX;
@@ -54,6 +56,7 @@ public class Player {
         this.playerWidth = 16;
         this.playerHeight = 32;
         this.playerLives = 3;
+        this.hasKey = false;
         isInvincible = false;
         invincibility_timer = 0f;
         INVINCIBILITY_FRAME = 2f;
@@ -62,7 +65,7 @@ public class Player {
         isBeingKnockedBack = false;
         this.collisionBox = new Rectangle((int) playerX + 4, (int) playerY + 6, (int) (playerWidth * 0.5), (int) (playerHeight * 0.2));
         this.hitBox = new Rectangle((int) playerX + 4, (int) playerY + 8, 8, 15);
-        this.sinusInput = 0f;
+        this.stateTime = 0f;
         this.spriteSheet = new Texture(Gdx.files.internal("character.png"));
         this.playerAnimations = this.loadAnimations();
         this.currentAnimation = this.playerAnimations.get("down");
@@ -123,28 +126,28 @@ public class Player {
 
         // move player according to the input
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            sinusInput += delta;
+            stateTime += delta;
             currentAnimation = playerAnimations.get("left");
             float potentialX = collisionBox.x - (speed * delta);
             if (!isCellBlocked(potentialX, collisionBox.y) && !isCellBlocked(potentialX, collisionBox.y + collisionBox.height)) {
                 playerX -= speed * delta;
             }
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            sinusInput += delta;
+            stateTime += delta;
             currentAnimation = playerAnimations.get("right");
             float potentialX = collisionBox.x + (speed * delta) + 1;
             if (!isCellBlocked(potentialX + collisionBox.width, collisionBox.y) && !isCellBlocked(potentialX + collisionBox.width, collisionBox.y + collisionBox.height)) {
                 playerX += speed * delta;
             }
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            sinusInput += delta;
+            stateTime += delta;
             currentAnimation = playerAnimations.get("up");
             float potentialY = collisionBox.y + (speed * delta) + 1;
             if (!isCellBlocked(collisionBox.x, potentialY + collisionBox.height) && !isCellBlocked(collisionBox.x + collisionBox.height, potentialY + collisionBox.height)) {
                 playerY += speed * delta;
             }
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            sinusInput += delta;
+            stateTime += delta;
             currentAnimation = playerAnimations.get("down");
             float potentialY = collisionBox.y - (speed * delta);
             if (!isCellBlocked(collisionBox.x, potentialY) && !isCellBlocked(collisionBox.x + collisionBox.width, potentialY)) {
@@ -163,7 +166,7 @@ public class Player {
 
     public void draw (Batch batch) {
         batch.draw(
-                currentAnimation.getKeyFrame(sinusInput, true),
+                currentAnimation.getKeyFrame(stateTime, true),
                 playerX,
                 playerY,
                 playerWidth,
@@ -299,12 +302,12 @@ public class Player {
         this.currentAnimation = currentAnimation;
     }
 
-    public float getSinusInput() {
-        return sinusInput;
+    public float getStateTime() {
+        return stateTime;
     }
 
-    public void setSinusInput(float sinusInput) {
-        this.sinusInput = sinusInput;
+    public void setStateTime(float stateTime) {
+        this.stateTime = stateTime;
     }
 
     public TiledMapTileLayer getCollisionLayer() {
@@ -385,6 +388,14 @@ public class Player {
 
     public void setBeingKnockedBack(boolean beingKnockedBack) {
         isBeingKnockedBack = beingKnockedBack;
+    }
+
+    public boolean isHasKey() {
+        return hasKey;
+    }
+
+    public void setHasKey(boolean hasKey) {
+        this.hasKey = hasKey;
     }
 
     public void dispose() {
