@@ -90,9 +90,17 @@ public class Player {
                 } else {
                     // if the player collides with the wall, reposition the player slightly outside the wall on the Y-axis and stop the knock back effect
                     TiledMapTileLayer.Cell cell = collisionLayer.getCell((int) (potentialX / 16), (int) (potentialY / 16));
-                    if (cell != null) {
-                        float cellUpperBound = (int)(potentialY / 16) * 16 + 16;
-                        this.playerY = cellUpperBound - 6;      // collision box Y is 6 pixels above the actual player's Y position
+                    if (knockBackThisFrame.y < 0) {
+                        if (cell != null) {
+                            float cellUpperBound = (int) (potentialY / 16) * 16 + 16;
+                            this.playerY = cellUpperBound - 6;      // collision box Y is 6 pixels above the actual player's Y position
+                        }
+                    }
+                    if (knockBackThisFrame.x < 0) {
+                        if (cell != null) {
+                            float cellRightBound = (int) (potentialX / 16) * 16 + 16;
+                            this.playerX = cellRightBound - 4;
+                        }
                     }
                     isBeingKnockedBack = false;
                 }

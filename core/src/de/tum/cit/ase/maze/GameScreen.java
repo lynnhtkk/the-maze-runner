@@ -18,6 +18,8 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -35,6 +37,7 @@ public class GameScreen implements Screen {
     private ExtendViewport viewport;
 
     private Player player;
+    private Key key;
 
     // initial coordinates for player's spawn point
     private float playerX;
@@ -44,6 +47,9 @@ public class GameScreen implements Screen {
     private List<int[]> mobsPositions;
     // list of dynamic mobs
     private List<Mob> mobs;
+
+    // list of exits
+    private Array<Rectangle> exits;
 
     // the width and height of the map
     private int mapWidth;
@@ -63,6 +69,7 @@ public class GameScreen implements Screen {
     // dummy HUD
     private Stage stage;
     private Label playerLivesLabel;
+    private Label hasKeyIndicator;
 
     private Rectangle spriteBox;
 
@@ -70,6 +77,8 @@ public class GameScreen implements Screen {
         borderTiles = 20;
         mobsPositions = new ArrayList<>();
         this.game = game;
+        key = new Key(0f, 0f);
+        exits = new Array<>();
         map = loadMap(mapLocation);
         mobs = spawnMobs(mobsPositions);
         this.player = new Player(playerX, playerY, (TiledMapTileLayer) map.getLayers().get(1));
@@ -88,7 +97,11 @@ public class GameScreen implements Screen {
 
         table.top().left();
         playerLivesLabel = new Label("", game.getSkin());
-        table.add(playerLivesLabel).pad(10);
+        playerLivesLabel.setAlignment(Align.left);
+        table.add(playerLivesLabel).padLeft(20).left().row();
+        hasKeyIndicator = new Label("Has Key: false", game.getSkin());
+        hasKeyIndicator.setAlignment(Align.left);
+        table.add(hasKeyIndicator).padLeft(20).left().row();
     }
 
     @Override
@@ -107,12 +120,19 @@ public class GameScreen implements Screen {
             game.goToGameOver();
         }
 
+        // to win the game, the player must have the key and find the exit
+        for (Rectangle exit : exits) {
+            if (player.isHasKey() && player.getCollisionBox().intersects(exit)) {
+                game.setGameState(GameState.VICTORY);
+                game.goToVictory();
+            }
+        }
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.position.set(player.getPlayerX(), player.getPlayerY(), 0);
         camera.update();
-        player.update(Gdx.graphics.getDeltaTime(), mapWidth, mapHeight, borderTiles);
 
         renderer.setView(camera);
         renderer.render();
@@ -126,21 +146,42 @@ public class GameScreen implements Screen {
         for (Mob mob : mobs) {
             mob.update(Gdx.graphics.getDeltaTime());
             mob.draw(renderer.getBatch());
-            shapeRenderer.setColor(Color.WHITE);
-            shapeRenderer.rect(mob.getHitBox().x, mob.getHitBox().y, mob.getHitBox().width, mob.getHitBox().height);
+            /*shapeRenderer.setColor(Color.WHITE);
+            shapeRenderer.rect(mob.getHitBox().x, mob.getHitBox().y, mob.getHitBox().width, mob.getHitBox().height);*/
             // check for collision between mobs and player
-            if (!player.isInvincible() && mob.getHitBox().intersects(player.getHitBox())) {
-                player.takeDamage();
-                player.applyKnockBack(mob, .9f);
+            if (mob instanceof DynamicMob) {
+                if (!player.isInvincible() && mob.getHitBox().intersects(player.getHitBox())) {
+                    player.takeDamage();
+                    player.applyKnockBack(mob, .9f);
+                }
+            } else if (mob instanceof StaticMob) {
+                if (!player.isInvincible() && mob.getHitBox().intersects(player.getCollisionBox())) {
+                    player.takeDamage();
+                    player.applyKnockBack(mob, .9f);
+                }
             }
         }
+
+        // don't draw the key anymore if the user has obtained the key
+        if (!player.isHasKey()) {
+            key.update(Gdx.graphics.getDeltaTime());
+            key.draw(renderer.getBatch());
+            if (key.getHitBox().intersects(player.getCollisionBox())) {
+                player.setHasKey(true);
+                hasKeyIndicator.setText("Has Key: " + player.isHasKey());
+            }
+        }
+
+        player.update(Gdx.graphics.getDeltaTime(), mapWidth, mapHeight, borderTiles);
         player.draw(renderer.getBatch());
+
         renderer.getBatch().end();
 
+        /*shapeRenderer.rect(player.getCollisionBox().x, player.getCollisionBox().y, player.getCollisionBox().width, player.getCollisionBox().height);
+        shapeRenderer.rect(key.getHitBox().x, key.getHitBox().y, key.getHitBox().width, key.getHitBox().height);
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.rect(player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);
-        /*shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(player.getCollisionBox().x, player.getCollisionBox().y, player.getCollisionBox().width, player.getCollisionBox().height);
+        shapeRenderer.setColor(Color.RED);
         shapeRenderer.setColor(Color.GREEN);
         shapeRenderer.rect(player.getPlayerX(), player.getPlayerY(), 16, 32);*/
         shapeRenderer.end();
@@ -153,8 +194,8 @@ public class GameScreen implements Screen {
 
     private void loadTileSet() {
         Texture basicTilesSheet = new Texture(Gdx.files.internal("basictiles.png"));
+        // credit: https://kenney-assets.itch.io/tiny-dungeon
         Texture tileMapSheet = new Texture(Gdx.files.internal("tilemap_packed.png"));
-        Texture mobSheet = new Texture(Gdx.files.internal("mobs.png"));
 
         int TILE_SIZE = 16;
 
@@ -164,12 +205,6 @@ public class GameScreen implements Screen {
         tile1.setId(1);
         StaticTiledMapTile tile2 = new StaticTiledMapTile(new TextureRegion(tileMapSheet, 9 * TILE_SIZE, 1 * TILE_SIZE, TILE_SIZE, TILE_SIZE));         // exit
         tile2.setId(2);
-        StaticTiledMapTile tile3 = new StaticTiledMapTile(new TextureRegion(tileMapSheet, 7 * TILE_SIZE, 1 * TILE_SIZE, TILE_SIZE, TILE_SIZE));         // static traps
-        tile3.setId(3);
-        StaticTiledMapTile tile4 = new StaticTiledMapTile(new TextureRegion(mobSheet, 2 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));             // dynamic mobs
-        tile4.setId(4);
-        StaticTiledMapTile tile5 = new StaticTiledMapTile(new TextureRegion(tileMapSheet, 11 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE, TILE_SIZE));         // key
-        tile5.setId(5);
         StaticTiledMapTile tile6 = new StaticTiledMapTile(new TextureRegion(tileMapSheet, 4 * TILE_SIZE, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE));         // floor
         tile6.setId(6);
 
@@ -177,9 +212,6 @@ public class GameScreen implements Screen {
         tileSet.putTile(0, tile0);
         tileSet.putTile(1, tile1);
         tileSet.putTile(2, tile2);
-        tileSet.putTile(3, tile3);
-        tileSet.putTile(4, tile4);
-        tileSet.putTile(5, tile5);
         tileSet.putTile(6, tile6);
     }
 
@@ -243,14 +275,19 @@ public class GameScreen implements Screen {
                     int x = Integer.parseInt(coordinates[0]) + borderTiles;
                     int y = Integer.parseInt(coordinates[1]) + borderTiles;
                     // mobs and player spawn points
-                    if (properties.getProperty(key).equals("4")) {
-                        mobsPositions.add(new int[]{4, x * 16, y * 16});
-                    } else if (properties.getProperty(key).equals("3")) {
+                    if (properties.getProperty(key).equals("3")) {
                         mobsPositions.add(new int[]{3, x * 16, y * 16});
+                    } else if (properties.getProperty(key).equals("4")) {
+                        mobsPositions.add(new int[]{4, x * 16, y * 16});
+                    } else if (properties.getProperty(key).equals("5")) {
+                        this.key.setPosition(x * 16, y * 16);
                     } else {
                         if (properties.getProperty(key).equals("1")) {
                             playerX = x * 16f;
                             playerY = y * 16f;
+                        }
+                        if (properties.getProperty(key).equals("2")) {
+                            exits.add(new Rectangle(x * 16, y * 16, 16, 16));
                         }
                         int tileID = Integer.parseInt(properties.getProperty(key));
 

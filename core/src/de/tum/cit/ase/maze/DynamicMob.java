@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
-import java.awt.*;
-
 public class DynamicMob extends Mob {
 
     private float sinusInput;
