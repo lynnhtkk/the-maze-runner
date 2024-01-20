@@ -3,6 +3,7 @@ package de.tum.cit.ase.maze;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -28,6 +29,9 @@ public class MazeRunnerGame extends Game {
     private NativeFileChooser fileChooser;
     private FileHandle fileHandle;
 
+    private Music menuScreenMusic;
+    private Music gameScreenMusic;
+
     public MazeRunnerGame(NativeFileChooser fileChooser) {
         super();
         this.fileChooser = fileChooser;
@@ -39,10 +43,13 @@ public class MazeRunnerGame extends Game {
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json"));
 
         // play background music
-        Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background.mp3"));
-        backgroundMusic.setLooping(true);
-        backgroundMusic.setVolume(0.1f);
-        backgroundMusic.play();
+        menuScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("menuScreenMusic.mp3"));
+        menuScreenMusic.setLooping(true);
+        menuScreenMusic.setVolume(.3f);
+
+        gameScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("gameScreenMusic.mp3"));
+        gameScreenMusic.setLooping(true);
+        gameScreenMusic.setVolume(.3f);
 
         // instantiate screen instances
         this.menuScreen = new MenuScreen(this);
@@ -50,28 +57,36 @@ public class MazeRunnerGame extends Game {
         this.gameOverScreen = new GameOverScreen(this);
         this.victoryScreen = new VictoryScreen(this);
 
+
         // got to game screen (directly for now)
         gotoMenu();
     }
 
     public void gotoMenu() {
+        gameScreenMusic.stop();
+        menuScreenMusic.play();
         this.setScreen(menuScreen);
     }
 
     public void goToPause() {
+        gameScreenMusic.pause();
         this.pause();
         this.setScreen(pauseScreen);
     }
 
     public void goToGame() {
+        menuScreenMusic.stop();
         if (this.gameState == null || this.gameState == GameState.NEW_GAME || this.gameState == GameState.GAME_OVER || this.gameState == GameState.VICTORY) {
+            gameScreenMusic.stop();
             this.gameState = GameState.RUNNING;
             this.gameScreen = new GameScreen(this, fileHandle);
         }
+        gameScreenMusic.play();
         this.setScreen(gameScreen);
     }
 
     public void goToGameOver() {
+        menuScreenMusic.stop();
         this.setScreen(gameOverScreen);
     }
 
@@ -141,6 +156,38 @@ public class MazeRunnerGame extends Game {
 
     public void setFileHandle(FileHandle fileHandle) {
         this.fileHandle = fileHandle;
+    }
+
+    public GameOverScreen getGameOverScreen() {
+        return gameOverScreen;
+    }
+
+    public void setGameOverScreen(GameOverScreen gameOverScreen) {
+        this.gameOverScreen = gameOverScreen;
+    }
+
+    public VictoryScreen getVictoryScreen() {
+        return victoryScreen;
+    }
+
+    public void setVictoryScreen(VictoryScreen victoryScreen) {
+        this.victoryScreen = victoryScreen;
+    }
+
+    public Music getMenuScreenMusic() {
+        return menuScreenMusic;
+    }
+
+    public void setMenuScreenMusic(Music menuScreenMusic) {
+        this.menuScreenMusic = menuScreenMusic;
+    }
+
+    public Music getGameScreenMusic() {
+        return gameScreenMusic;
+    }
+
+    public void setGameScreenMusic(Music gameScreenMusic) {
+        this.gameScreenMusic = gameScreenMusic;
     }
 
     @Override

@@ -3,8 +3,8 @@ package de.tum.cit.ase.maze;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -70,8 +70,13 @@ public class GameScreen implements Screen {
     private Stage stage;
     private Label playerLivesLabel;
     private Label hasKeyIndicator;
-
     private Rectangle spriteBox;
+
+    // music and sounds
+    private Sound takeDamageSound;
+    private Sound keyCollectedSound;
+    private Sound victorySound;
+    private Sound gameOverSound;
 
     public GameScreen(MazeRunnerGame game, FileHandle mapLocation) {
         borderTiles = 20;
@@ -88,6 +93,11 @@ public class GameScreen implements Screen {
         viewport = new ExtendViewport(500, 500, camera);
         shapeRenderer = new ShapeRenderer();
         spriteBox = new Rectangle((int) playerX, (int) playerY, 16, 32);
+
+        takeDamageSound = Gdx.audio.newSound(Gdx.files.internal("take-damage.wav"));
+        keyCollectedSound = Gdx.audio.newSound(Gdx.files.internal("key-collected.wav"));
+        victorySound = Gdx.audio.newSound(Gdx.files.internal("victory.wav"));
+        gameOverSound = Gdx.audio.newSound(Gdx.files.internal("game-over.wav"));
 
         stage = new Stage(new ScreenViewport(new OrthographicCamera()), game.getBatch());
 
@@ -112,11 +122,15 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         // press ESC to pause the game
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) game.goToPause();
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            game.goToPause();
+        }
 
         // check if the player loses all his lives
         if (player.getPlayerLives() <= 0) {
             game.setGameState(GameState.GAME_OVER);
+            game.getGameScreenMusic().stop();
+            gameOverSound.play();
             game.goToGameOver();
         }
 
@@ -124,6 +138,7 @@ public class GameScreen implements Screen {
         for (Rectangle exit : exits) {
             if (player.isHasKey() && player.getCollisionBox().intersects(exit)) {
                 game.setGameState(GameState.VICTORY);
+                victorySound.play();
                 game.goToVictory();
             }
         }
@@ -152,22 +167,25 @@ public class GameScreen implements Screen {
             if (mob instanceof DynamicMob) {
                 if (!player.isInvincible() && mob.getHitBox().intersects(player.getHitBox())) {
                     player.takeDamage();
+                    takeDamageSound.play();
                     player.applyKnockBack(mob, .9f);
                 }
             } else if (mob instanceof StaticMob) {
                 if (!player.isInvincible() && mob.getHitBox().intersects(player.getCollisionBox())) {
                     player.takeDamage();
+                    takeDamageSound.play();
                     player.applyKnockBack(mob, .9f);
                 }
             }
         }
 
-        // don't draw the key anymore if the user has obtained the key
+        // check if the player has obtained the key
         if (!player.isHasKey()) {
             key.update(Gdx.graphics.getDeltaTime());
             key.draw(renderer.getBatch());
             if (key.getHitBox().intersects(player.getCollisionBox())) {
                 player.setHasKey(true);
+                keyCollectedSound.play();
                 hasKeyIndicator.setText("Has Key: " + player.isHasKey());
             }
         }
