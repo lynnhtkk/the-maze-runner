@@ -176,6 +176,7 @@ public class GameScreen implements Screen {
                 }
                 if (player.getAttackBox().intersects(mob.getHitBox())) {
                     ((DynamicMob) mob).takeDamage();
+                    ((DynamicMob) mob).applyKnockBack(player, .9f);
 
                     // If the mob has lost all lives, remove it
                     if (((DynamicMob) mob).getLives() <= 0) {
@@ -217,7 +218,7 @@ public class GameScreen implements Screen {
         // attack box down
         shapeRenderer.rect(player.getPlayerX(), player.getPlayerY() + 1, 16, 7);
 
-        shapeRenderer.rect(player.getAttackBox().x, player.getAttackBox().y, player.getAttackBox().width, player.getAttackBox().height);/*
+        shapeRenderer.rect(player.getAttackBox().x, player.getAttackBox().y, player.getAttackBox().width, player.getAttackBox().height);*/
 
         /*shapeRenderer.rect(player.getCollisionBox().x, player.getCollisionBox().y, player.getCollisionBox().width, player.getCollisionBox().height);
         shapeRenderer.rect(player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);

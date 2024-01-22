@@ -2,6 +2,7 @@ package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -32,7 +33,7 @@ public class Player {
 
     private boolean isInvincible;
     private float invincibility_timer;
-    private final float INVINCIBILITY_FRAME;
+    private final float INVINCIBILITY_DURATION;
 
     private Direction facingDirection;
     private boolean attacking;
@@ -53,6 +54,8 @@ public class Player {
 
     private float stateTime;
 
+    private Sound attackSound;
+
     public Player(float playerX, float playerY, TiledMapTileLayer collisionLayer) {
         this.playerX = playerX;
         this.playerY = playerY;
@@ -64,11 +67,12 @@ public class Player {
         this.hasKey = false;
         isInvincible = false;
         invincibility_timer = 0f;
-        INVINCIBILITY_FRAME = 2f;
+        INVINCIBILITY_DURATION = 2f;
         facingDirection = Direction.DOWN;
         attacking = false;
         attackStateTime = 0f;
         attackBox = new Rectangle((int) playerX, (int) playerY, 0, 0);
+        attackSound = Gdx.audio.newSound(Gdx.files.internal("attack.wav"));
         knockBackTime = 0f;
         KNOCKBACKDURATION = 1f;
         beingKnockedBack = false;
@@ -177,7 +181,10 @@ public class Player {
         } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             attacking = true;
             attackStateTime += delta;
-            if (isSwingingSword()) updateAttackBox(facingDirection);
+            if (isSwingingSword()) {
+                updateAttackBox(facingDirection);
+                attackSound.play();
+            }
         }
 
         this.collisionBox.setLocation((int) playerX + 4, (int) playerY + 6);
@@ -368,7 +375,7 @@ public class Player {
         if (!isInvincible) {
             playerLives--;
             isInvincible = true;
-            invincibility_timer = INVINCIBILITY_FRAME;
+            invincibility_timer = INVINCIBILITY_DURATION;
         }
     }
 
@@ -506,8 +513,8 @@ public class Player {
         this.invincibility_timer = invincibility_timer;
     }
 
-    public float getINVINCIBILITY_FRAME() {
-        return INVINCIBILITY_FRAME;
+    public float getINVINCIBILITY_DURATION() {
+        return INVINCIBILITY_DURATION;
     }
 
     public Vector2 getKnockBackVector() {
@@ -580,5 +587,6 @@ public class Player {
 
     public void dispose() {
         spriteSheet.dispose();
+        attackSound.dispose();
     }
 }

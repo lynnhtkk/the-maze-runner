@@ -3,7 +3,6 @@ package de.tum.cit.ase.maze;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -45,7 +44,7 @@ public class MazeRunnerGame extends Game {
         // play background music
         menuScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("menuScreenMusic.mp3"));
         menuScreenMusic.setLooping(true);
-        menuScreenMusic.setVolume(.3f);
+        menuScreenMusic.setVolume(.5f);
 
         gameScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("gameScreenMusic.mp3"));
         gameScreenMusic.setLooping(true);
@@ -91,6 +90,7 @@ public class MazeRunnerGame extends Game {
     }
 
     public void goToVictory() {
+        gameScreenMusic.pause();
         this.setScreen(victoryScreen);
     }
 
