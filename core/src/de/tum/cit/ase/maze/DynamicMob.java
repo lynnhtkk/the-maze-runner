@@ -12,8 +12,11 @@ public class DynamicMob extends Mob {
     private Animation<TextureRegion> animation;
     private Texture spriteSheet;
 
+    private int lives;
+
     public DynamicMob(float x, float y) {
         super(x, y, 8, 6);
+        lives = 3;
         spriteSheet = new Texture(Gdx.files.internal("mobs.png"));
         loadAnimation();
     }
@@ -46,6 +49,28 @@ public class DynamicMob extends Mob {
                 16,
                 16
         );
+    }
+
+    /**
+     * Reduces the life count of the dynamic mob by one.
+     * <p>
+     * This method is used to simulate taking damage by the mob. Each call to this method
+     * decrements the mob's life count by one. This is typically invoked when the mob is
+     * hit or harmed in some way in the game.
+     * </p>
+     *
+     * @see DynamicMob#lives
+     */
+    public void takeDamage() {
+        this.lives--;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
     }
 
     public Animation<TextureRegion> getAnimation() {

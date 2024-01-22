@@ -92,6 +92,8 @@ public class GameScreen implements Screen {
         camera.zoom = .6f;
         viewport = new ExtendViewport(500, 500, camera);
         shapeRenderer = new ShapeRenderer();
+
+        // for debugging
         spriteBox = new Rectangle((int) playerX, (int) playerY, 16, 32);
 
         takeDamageSound = Gdx.audio.newSound(Gdx.files.internal("take-damage.wav"));
@@ -158,17 +160,27 @@ public class GameScreen implements Screen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         renderer.getBatch().begin();
-        for (Mob mob : mobs) {
+
+        Iterator<Mob> iterator = mobs.iterator();
+        while (iterator.hasNext()) {
+            Mob mob = iterator.next();
             mob.update(Gdx.graphics.getDeltaTime());
             mob.draw(renderer.getBatch());
-            /*shapeRenderer.setColor(Color.WHITE);
-            shapeRenderer.rect(mob.getHitBox().x, mob.getHitBox().y, mob.getHitBox().width, mob.getHitBox().height);*/
+
             // check for collision between mobs and player
             if (mob instanceof DynamicMob) {
                 if (!player.isInvincible() && mob.getHitBox().intersects(player.getHitBox())) {
                     player.takeDamage();
                     takeDamageSound.play();
                     player.applyKnockBack(mob, .9f);
+                }
+                if (player.getAttackBox().intersects(mob.getHitBox())) {
+                    ((DynamicMob) mob).takeDamage();
+
+                    // If the mob has lost all lives, remove it
+                    if (((DynamicMob) mob).getLives() <= 0) {
+                        iterator.remove();
+                    }
                 }
             } else if (mob instanceof StaticMob) {
                 if (!player.isInvincible() && mob.getHitBox().intersects(player.getCollisionBox())) {
@@ -178,6 +190,7 @@ public class GameScreen implements Screen {
                 }
             }
         }
+
 
         // check if the player has obtained the key
         if (!player.isHasKey()) {
@@ -194,6 +207,17 @@ public class GameScreen implements Screen {
         player.draw(renderer.getBatch());
 
         renderer.getBatch().end();
+
+        /*// attack box left
+        shapeRenderer.rect(player.getPlayerX() - 6, player.getPlayerY() + 4, 7, 16);
+        // attack box right
+        shapeRenderer.rect(player.getPlayerX() + 14, player.getPlayerY() + 4, 7, 16);
+        // attack box up
+        shapeRenderer.rect(player.getPlayerX(), player.getPlayerY() + 18, 16, 7);
+        // attack box down
+        shapeRenderer.rect(player.getPlayerX(), player.getPlayerY() + 1, 16, 7);
+
+        shapeRenderer.rect(player.getAttackBox().x, player.getAttackBox().y, player.getAttackBox().width, player.getAttackBox().height);/*
 
         /*shapeRenderer.rect(player.getCollisionBox().x, player.getCollisionBox().y, player.getCollisionBox().width, player.getCollisionBox().height);
         shapeRenderer.rect(player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);
@@ -217,7 +241,7 @@ public class GameScreen implements Screen {
 
         int TILE_SIZE = 16;
 
-        StaticTiledMapTile tile0 = new StaticTiledMapTile(new TextureRegion(basicTilesSheet, 0, 10 * TILE_SIZE, TILE_SIZE, TILE_SIZE));                 // wall tiles
+        StaticTiledMapTile tile0 = new StaticTiledMapTile(new TextureRegion(basicTilesSheet, 0 * TILE_SIZE, 10 * TILE_SIZE, TILE_SIZE, TILE_SIZE));                 // wall tiles
         tile0.setId(0);
         StaticTiledMapTile tile1 = new StaticTiledMapTile(new TextureRegion(basicTilesSheet, 1 * TILE_SIZE, 7 * TILE_SIZE, TILE_SIZE, TILE_SIZE));      // entry point
         tile1.setId(1);

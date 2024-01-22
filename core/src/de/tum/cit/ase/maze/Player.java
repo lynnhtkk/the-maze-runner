@@ -34,10 +34,15 @@ public class Player {
     private float invincibility_timer;
     private final float INVINCIBILITY_FRAME;
 
+    private Direction facingDirection;
+    private boolean attacking;
+    private float attackStateTime;
+    private Rectangle attackBox;
+
     private Vector2 knockBackVector;
     private float knockBackTime;
     private final float KNOCKBACKDURATION;
-    private boolean isBeingKnockedBack;
+    private boolean beingKnockedBack;
 
     private int playerLives;
 
@@ -60,9 +65,13 @@ public class Player {
         isInvincible = false;
         invincibility_timer = 0f;
         INVINCIBILITY_FRAME = 2f;
+        facingDirection = Direction.DOWN;
+        attacking = false;
+        attackStateTime = 0f;
+        attackBox = new Rectangle((int) playerX, (int) playerY, 0, 0);
         knockBackTime = 0f;
         KNOCKBACKDURATION = 1f;
-        isBeingKnockedBack = false;
+        beingKnockedBack = false;
         this.collisionBox = new Rectangle((int) playerX + 4, (int) playerY + 6, (int) (playerWidth * 0.5), (int) (playerHeight * 0.2));
         this.hitBox = new Rectangle((int) playerX + 4, (int) playerY + 8, 8, 15);
         this.stateTime = 0f;
@@ -72,12 +81,16 @@ public class Player {
     }
 
     public void update(float delta, int mapWidth, int mapHeight, int borderTiles) {
+        attacking = false;
+        attackBox.setLocation((int) playerX, (int) playerY);
+        attackBox.setSize(0, 0);
+
         // check to see if the player is knocked back (took damage) and apply knock back if it does
-        if (isBeingKnockedBack) {
+        if (beingKnockedBack) {
             // count down the knock back timer
             knockBackTime -= delta;
             if (knockBackTime <= 0) {
-                isBeingKnockedBack = false;
+                beingKnockedBack = false;
             } else {
                 // to get the slowly knocked back effect
                 float knockBackFactor = knockBackTime / KNOCKBACKDURATION;
@@ -105,7 +118,7 @@ public class Player {
                             this.playerX = cellRightBound - 4;
                         }
                     }
-                    isBeingKnockedBack = false;
+                    beingKnockedBack = false;
                 }
             }
         }
@@ -126,6 +139,7 @@ public class Player {
 
         // move player according to the input
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            facingDirection = Direction.LEFT;
             stateTime += delta;
             currentAnimation = playerAnimations.get("left");
             hitBox.height = 15;
@@ -134,6 +148,7 @@ public class Player {
                 playerX -= speed * delta;
             }
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            facingDirection = Direction.RIGHT;
             stateTime += delta;
             currentAnimation = playerAnimations.get("right");
             hitBox.height = 15;
@@ -142,6 +157,7 @@ public class Player {
                 playerX += speed * delta;
             }
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            facingDirection = Direction.UP;
             stateTime += delta;
             currentAnimation = playerAnimations.get("up");
             hitBox.height = 10;
@@ -150,6 +166,7 @@ public class Player {
                 playerY += speed * delta;
             }
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            facingDirection = Direction.DOWN;
             stateTime += delta;
             currentAnimation = playerAnimations.get("down");
             hitBox.height = 15;
@@ -157,6 +174,10 @@ public class Player {
             if (!isCellBlocked(collisionBox.x, potentialY) && !isCellBlocked(collisionBox.x + collisionBox.width, potentialY)) {
                 playerY -= speed * delta;
             }
+        } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            attacking = true;
+            attackStateTime += delta;
+            if (isSwingingSword()) updateAttackBox(facingDirection);
         }
 
         this.collisionBox.setLocation((int) playerX + 4, (int) playerY + 6);
@@ -169,13 +190,86 @@ public class Player {
     }
 
     public void draw (Batch batch) {
-        batch.draw(
-                currentAnimation.getKeyFrame(stateTime, true),
-                playerX,
-                playerY,
-                playerWidth,
-                playerHeight
-        );
+        if (attacking) {
+            if (facingDirection.equals(Direction.LEFT)) {
+                batch.draw(
+                        playerAnimations.get("attack-left").getKeyFrame(attackStateTime * 1.2f, true),
+                        playerX - 8,
+                        playerY,
+                        32,
+                        32
+                );
+            } else if (facingDirection.equals(Direction.RIGHT)) {
+                batch.draw(
+                        playerAnimations.get("attack-right").getKeyFrame(attackStateTime * 1.2f, true),
+                        playerX - 8,
+                        playerY,
+                        32,
+                        32
+                );
+            } else if (facingDirection.equals(Direction.UP)) {
+                batch.draw(
+                        playerAnimations.get("attack-up").getKeyFrame(attackStateTime * 1.2f, true),
+                        playerX - 8,
+                        playerY,
+                        32,
+                        32
+                );
+            } else if (facingDirection.equals(Direction.DOWN)) {
+                batch.draw(
+                        playerAnimations.get("attack-down").getKeyFrame(attackStateTime * 1.2f, true),
+                        playerX - 8,
+                        playerY,
+                        32,
+                        32
+                );
+            }
+        } else {
+            batch.draw(
+                    currentAnimation.getKeyFrame(stateTime, true),
+                    playerX,
+                    playerY,
+                    playerWidth,
+                    playerHeight
+            );
+        }
+    }
+
+    /**
+     * Updates the location and size of the attackBox based on the player's facing direction.
+     * <p>
+     * This method adjusts the attackBox's position and dimensions to align with the player's
+     * current direction. The attackBox represents the area where the player's attack can hit.
+     * The method takes into account four possible directions: LEFT, RIGHT, UP, and DOWN.
+     * Depending on the direction, the attackBox is repositioned and resized accordingly to
+     * reflect the player's attack range and orientation.
+     * </p>
+     *
+     * @param direction The direction the player is facing. It should be one of the enum values:
+     *                  LEFT, RIGHT, UP, or DOWN. This parameter dictates how the attackBox
+     *                  will be updated in terms of location and size.
+     * @throws NullPointerException if the direction is null.
+     * @see Direction
+     */
+    public void updateAttackBox(Direction direction) {
+        switch (direction){
+            case LEFT:
+                attackBox.setLocation((int) playerX - 6, (int) playerY + 4);
+                attackBox.setSize(7, 16);
+                break;
+            case RIGHT:
+                attackBox.setLocation((int) playerX + 14, (int) playerY + 4);
+                attackBox.setSize(7, 16);
+                break;
+            case UP:
+                attackBox.setLocation((int) playerX, (int) playerY + 18);
+                attackBox.setSize(16, 7);
+                break;
+            case DOWN:
+                attackBox.setLocation((int) playerX, (int) playerY + 1);
+                attackBox.setSize(16, 7);
+                break;
+        }
     }
 
     private Map<String, Animation<TextureRegion>> loadAnimations() {
@@ -217,7 +311,57 @@ public class Player {
         animationMap.put("right", new Animation<>(0.1f, walkFrames));
         walkFrames.clear();
 
+        // attacking face down (32 x 32, 5th row)
+        for (int col = 0; col < ANIMATION_FRAMES; col++) {
+            walkFrames.add(new TextureRegion(spriteSheet, col * 32, 4 * FRAME_HEIGHT, 32, 32));
+        }
+        animationMap.put("attack-down", new Animation<>(.15f, walkFrames));
+        walkFrames.clear();
+
+        // attacking face up (32 x 32, 6th row)
+        for (int col = 0; col < ANIMATION_FRAMES; col++) {
+            walkFrames.add(new TextureRegion(spriteSheet, col * 32, 5 * FRAME_HEIGHT, 32, 32));
+        }
+        animationMap.put("attack-up", new Animation<>(.15f, walkFrames));
+        walkFrames.clear();
+
+        // attacking face right (32 x 32, 7th row)
+        for (int col = 0; col < ANIMATION_FRAMES; col++) {
+            walkFrames.add(new TextureRegion(spriteSheet, col * 32, 6 * FRAME_HEIGHT, 32, 32));
+        }
+        animationMap.put("attack-right", new Animation<>(.15f, walkFrames));
+        walkFrames.clear();
+
+        // attacking face left (32 x 32, 8th row)
+        for (int col = 0; col < ANIMATION_FRAMES; col++) {
+            walkFrames.add(new TextureRegion(spriteSheet, col * 32, 7 * FRAME_HEIGHT, 32, 32));
+        }
+        animationMap.put("attack-left", new Animation<>(.15f, walkFrames));
+        walkFrames.clear();
+
         return animationMap;
+    }
+
+    /**
+     * Determines if the player is currently swinging his sword during the attack animation cycle.
+     * <p>
+     * This method calculates the current animation frame index based on the attack state time.
+     * It specifically checks if the animation is in the frames where the sword swing occurs,
+     * typically identified by frame index 3. These frames are considered to represent
+     * the sword swinging action in the attack cycle.
+     * </p>
+     *
+     * @return {@code true} if the current animation frame is either 2 or 3, indicating a sword swing;
+     *         {@code false} otherwise.
+     *
+     * @see Player#update(float, int, int, int)
+     */
+    public boolean isSwingingSword() {
+        int frameIndex = (int) ((attackStateTime % (.15f * 4)) / .15f);
+        if (frameIndex == 3) {
+            return true;
+        }
+        return false;
     }
 
     public void takeDamage() {
@@ -239,7 +383,7 @@ public class Player {
 
         // set the knockBackTimer
         knockBackTime = KNOCKBACKDURATION;
-        isBeingKnockedBack = true;
+        beingKnockedBack = true;
     }
 
     public Texture getSpriteSheet() {
@@ -387,11 +531,11 @@ public class Player {
     }
 
     public boolean isBeingKnockedBack() {
-        return isBeingKnockedBack;
+        return beingKnockedBack;
     }
 
     public void setBeingKnockedBack(boolean beingKnockedBack) {
-        isBeingKnockedBack = beingKnockedBack;
+        this.beingKnockedBack = beingKnockedBack;
     }
 
     public boolean isHasKey() {
@@ -400,6 +544,38 @@ public class Player {
 
     public void setHasKey(boolean hasKey) {
         this.hasKey = hasKey;
+    }
+
+    public Direction getFacingDirection() {
+        return facingDirection;
+    }
+
+    public void setFacingDirection(Direction facingDirection) {
+        this.facingDirection = facingDirection;
+    }
+
+    public boolean isAttacking() {
+        return attacking;
+    }
+
+    public void setAttacking(boolean attacking) {
+        this.attacking = attacking;
+    }
+
+    public float getAttackStateTime() {
+        return attackStateTime;
+    }
+
+    public void setAttackStateTime(float attackStateTime) {
+        this.attackStateTime = attackStateTime;
+    }
+
+    public Rectangle getAttackBox() {
+        return attackBox;
+    }
+
+    public void setAttackBox(Rectangle attackBox) {
+        this.attackBox = attackBox;
     }
 
     public void dispose() {
