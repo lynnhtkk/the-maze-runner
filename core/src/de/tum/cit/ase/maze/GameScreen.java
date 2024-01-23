@@ -169,6 +169,8 @@ public class GameScreen implements Screen {
 
             // check for collision between mobs and player
             if (mob instanceof DynamicMob) {
+                /*// for debugging
+                shapeRenderer.rect(mob.getHitBox().x, mob.getHitBox().y, mob.getHitBox().width, mob.getHitBox().height);*/
                 if (!player.isInvincible() && mob.getHitBox().intersects(player.getHitBox())) {
                     player.takeDamage();
                     takeDamageSound.play();
@@ -221,8 +223,8 @@ public class GameScreen implements Screen {
         shapeRenderer.rect(player.getAttackBox().x, player.getAttackBox().y, player.getAttackBox().width, player.getAttackBox().height);*/
 
         /*shapeRenderer.rect(player.getCollisionBox().x, player.getCollisionBox().y, player.getCollisionBox().width, player.getCollisionBox().height);
-        shapeRenderer.rect(player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);
         shapeRenderer.rect(key.getHitBox().x, key.getHitBox().y, key.getHitBox().width, key.getHitBox().height);
+        shapeRenderer.rect(player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height);
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.setColor(Color.GREEN);
@@ -351,7 +353,7 @@ public class GameScreen implements Screen {
         List<Mob> mobs = new ArrayList<>();
         for (int[] coordinates : mobsPositions) {
             if (coordinates[0] == 4) {
-                mobs.add(new DynamicMob(coordinates[1], coordinates[2]));
+                mobs.add(new DynamicMob(coordinates[1], coordinates[2], (TiledMapTileLayer) map.getLayers().get(1)));
             } else if (coordinates[0] == 3) {
                 mobs.add(new StaticMob(coordinates[1], coordinates[2]));
             }

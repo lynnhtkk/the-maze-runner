@@ -44,11 +44,11 @@ public class MazeRunnerGame extends Game {
         // play background music
         menuScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("menuScreenMusic.mp3"));
         menuScreenMusic.setLooping(true);
-        menuScreenMusic.setVolume(.5f);
+        menuScreenMusic.setVolume(.1f);
 
-        gameScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("gameScreenMusic.mp3"));
+        gameScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("pixel_sprinter_loop.mp3"));
         gameScreenMusic.setLooping(true);
-        gameScreenMusic.setVolume(.3f);
+        gameScreenMusic.setVolume(.2f);
 
         // instantiate screen instances
         this.menuScreen = new MenuScreen(this);
