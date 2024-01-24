@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -13,6 +14,11 @@ public class DynamicMob extends Mob {
 
     private Animation<TextureRegion> animation;
     private Texture spriteSheet;
+
+    private Vector2 originalPosition;
+    private Vector2 targetPosition;
+    private float movableRange;
+    private float speed;
 
     private int lives;
 
@@ -25,8 +31,15 @@ public class DynamicMob extends Mob {
     private final float KNOCKBACKDURATION;
     private boolean beingKnockedBack;
 
-    public DynamicMob(float x, float y) {
+    private TiledMapTileLayer collisionLayer;
+
+    public DynamicMob(float x, float y, TiledMapTileLayer collisionLayer) {
         super(x, y, 8, 6);
+        this.collisionLayer = collisionLayer;
+        originalPosition = new Vector2(x, y);
+        targetPosition = new Vector2(x, y);
+        movableRange = 32f;
+        speed = 20f;
         lives = 3;
         spriteSheet = new Texture(Gdx.files.internal("mobs.png"));
         KNOCKBACKDURATION = 1f;
@@ -49,8 +62,33 @@ public class DynamicMob extends Mob {
         animation = new Animation<>(.1f, walkFrames);
     }
 
+    private void chooseNewTargetPosition() {
+        float randomX = MathUtils.random(originalPosition.x - movableRange, originalPosition.x + movableRange);
+        float randomY = MathUtils.random(originalPosition.y - movableRange, originalPosition.y + movableRange);
+        targetPosition.set(randomX, randomY);
+    }
+
     @Override
     public void update(float delta) {
+        super.stateTime += delta;
+        super.getHitBox().setLocation((int) super.getX() + 4, (int) super.getY() + 6);
+
+        // move towards the target position
+        Vector2 currentPosition = new Vector2(super.getX(), super.getY());
+        if (!currentPosition.epsilonEquals(targetPosition, 1f)) {
+            Vector2 moveDirection = targetPosition.cpy().sub(currentPosition).nor();
+            // check if the mob is going to collide with the wall
+            Vector2 potentialPosition = currentPosition.cpy().add(moveDirection.scl(speed * delta));
+            if (!isCellBlocked(potentialPosition.x + 2, potentialPosition.y + 2)) {
+                super.setX(potentialPosition.x);
+                super.setY(potentialPosition.y);
+            } else {
+                chooseNewTargetPosition();
+            }
+        } else {
+            chooseNewTargetPosition();
+        }
+
         // check if the mob is invincible, if invincible, count down the timer
         if (isInvincible) {
             invincibility_timer -= delta;
@@ -70,13 +108,21 @@ public class DynamicMob extends Mob {
                 float knockBackFactor = knockBackTime / KNOCKBACKDURATION;
                 Vector2 knockBackThisFrame = knockBackVector.cpy().scl(knockBackFactor);
 
-                super.setX(super.getX() + knockBackThisFrame.x);
-                super.setY(super.getY() + knockBackThisFrame.y);
+                // check for collision using potential position
+                Vector2 potentialPosition = new Vector2(super.getX(), super.getY()).add(knockBackThisFrame);
+                if (!isCellBlocked(potentialPosition.x + 16 / 2, potentialPosition.y + 16 /2)) {
+                    super.setX(super.getX() + knockBackThisFrame.x);
+                    super.setY(super.getY() + knockBackThisFrame.y);
+                } else {
+                    beingKnockedBack = false;
+                }
             }
         }
+    }
 
-        super.stateTime += delta;
-        super.getHitBox().setLocation((int) super.getX() + 4, (int) super.getY() + 6);
+    private boolean isCellBlocked(float x, float y) {
+        TiledMapTileLayer.Cell cell = collisionLayer.getCell((int) (x / 16), (int) (y / 16));
+        return cell != null && cell.getTile() != null && cell.getTile().getId() == 0;
     }
 
     @Override

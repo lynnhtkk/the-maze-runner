@@ -89,40 +89,46 @@ public class Player {
         attackBox.setLocation((int) playerX, (int) playerY);
         attackBox.setSize(0, 0);
 
-        // check to see if the player is knocked back (took damage) and apply knock back if it does
+        // apply knock back effect if beingKnockedBack is true
         if (beingKnockedBack) {
             // count down the knock back timer
             knockBackTime -= delta;
+            // if the timer is up (reaches 0), set beingKnockedBack to false again
             if (knockBackTime <= 0) {
                 beingKnockedBack = false;
             } else {
-                // to get the slowly knocked back effect
                 float knockBackFactor = knockBackTime / KNOCKBACKDURATION;
                 Vector2 knockBackThisFrame = knockBackVector.cpy().scl(knockBackFactor);
 
-                // to check collision and to make sure that the player doesn't get knocked back to the walls
-                float potentialX = this.hitBox.x + knockBackThisFrame.x + 1;
-                float potentialY = this.hitBox.y + knockBackThisFrame.y + 1;
-                if (!isCellBlocked(potentialX, potentialY) && !isCellBlocked(potentialX + collisionBox.width, potentialY)
-                        && !isCellBlocked(potentialX, potentialY + collisionBox.height) && !isCellBlocked(potentialX + collisionBox.width, potentialY + collisionBox.height)) {
-                    this.playerX += knockBackThisFrame.x;
-                    this.playerY += knockBackThisFrame.y;
-                } else {
-                    // if the player collides with the wall, reposition the player slightly outside the wall on the Y-axis and stop the knock back effect
-                    TiledMapTileLayer.Cell cell = collisionLayer.getCell((int) (potentialX / 16), (int) (potentialY / 16));
-                    if (knockBackThisFrame.y < 0) {
-                        if (cell != null) {
-                            float cellUpperBound = (int) (potentialY / 16) * 16 + 16;
-                            this.playerY = cellUpperBound - 6;      // collision box Y is 6 pixels above the actual player's Y position
-                        }
+                // check for collision using potential position
+                Vector2 potentialPosition = new Vector2(collisionBox.x, collisionBox.y).add(knockBackThisFrame);
+                if (knockBackThisFrame.x < 0) {
+                    if (!isCellBlocked(potentialPosition.x, potentialPosition.y) && !isCellBlocked(potentialPosition.x, potentialPosition.y + collisionBox.height)) {
+                        playerX += knockBackThisFrame.x;
+                    } else {
+                        beingKnockedBack = false;
                     }
-                    if (knockBackThisFrame.x < 0) {
-                        if (cell != null) {
-                            float cellRightBound = (int) (potentialX / 16) * 16 + 16;
-                            this.playerX = cellRightBound - 4;
-                        }
+                } else if (knockBackThisFrame.x > 0) {
+                    potentialPosition.add(1, 0);
+                    if (!isCellBlocked(potentialPosition.x + collisionBox.width, potentialPosition.y) && !isCellBlocked(potentialPosition.x + collisionBox.width, potentialPosition.y + collisionBox.height)) {
+                        playerX += knockBackThisFrame.x;
+                    } else {
+                        beingKnockedBack = false;
                     }
-                    beingKnockedBack = false;
+                } else if (knockBackThisFrame.y < 0) {
+                    if (!isCellBlocked(potentialPosition.x, potentialPosition.y) && !isCellBlocked(potentialPosition.x + collisionBox.width, potentialPosition.y)) {
+                        playerY += knockBackThisFrame.y;
+                    } else {
+                        beingKnockedBack = false;
+                    }
+                }
+                else if (knockBackThisFrame.y > 0) {
+                    potentialPosition.add(0, 1);
+                    if (!isCellBlocked(potentialPosition.x, potentialPosition.y + collisionBox.height) && !isCellBlocked(potentialPosition.x + collisionBox.width, potentialPosition.y + collisionBox.height)) {
+                        playerY += knockBackThisFrame.y;
+                    } else {
+                        beingKnockedBack = false;
+                    }
                 }
             }
         }
@@ -137,7 +143,7 @@ public class Player {
 
         // restrict so that the player can't go outside the maze walls
         if (playerX < borderTiles * 16) playerX = borderTiles * 16;
-        if (playerX > (mapHeight + borderTiles - 1) * 16) playerX = (mapHeight + borderTiles - 1) * 16;
+        if (playerX > (mapWidth + borderTiles - 1) * 16) playerX = (mapWidth + borderTiles - 1) * 16;
         if (playerY < borderTiles * 16) playerY = borderTiles * 16;
         if (playerY > (mapHeight + borderTiles - 1) * 16) playerY = (mapHeight + borderTiles - 1) * 16;
 
@@ -146,7 +152,6 @@ public class Player {
             facingDirection = Direction.LEFT;
             stateTime += delta;
             currentAnimation = playerAnimations.get("left");
-            hitBox.height = 15;
             float potentialX = collisionBox.x - (speed * delta);
             if (!isCellBlocked(potentialX, collisionBox.y) && !isCellBlocked(potentialX, collisionBox.y + collisionBox.height)) {
                 playerX -= speed * delta;
@@ -155,7 +160,6 @@ public class Player {
             facingDirection = Direction.RIGHT;
             stateTime += delta;
             currentAnimation = playerAnimations.get("right");
-            hitBox.height = 15;
             float potentialX = collisionBox.x + (speed * delta) + 1;
             if (!isCellBlocked(potentialX + collisionBox.width, collisionBox.y) && !isCellBlocked(potentialX + collisionBox.width, collisionBox.y + collisionBox.height)) {
                 playerX += speed * delta;
@@ -164,7 +168,6 @@ public class Player {
             facingDirection = Direction.UP;
             stateTime += delta;
             currentAnimation = playerAnimations.get("up");
-            hitBox.height = 10;
             float potentialY = collisionBox.y + (speed * delta) + 1;
             if (!isCellBlocked(collisionBox.x, potentialY + collisionBox.height) && !isCellBlocked(collisionBox.x + collisionBox.height, potentialY + collisionBox.height)) {
                 playerY += speed * delta;
@@ -173,7 +176,6 @@ public class Player {
             facingDirection = Direction.DOWN;
             stateTime += delta;
             currentAnimation = playerAnimations.get("down");
-            hitBox.height = 15;
             float potentialY = collisionBox.y - (speed * delta);
             if (!isCellBlocked(collisionBox.x, potentialY) && !isCellBlocked(collisionBox.x + collisionBox.width, potentialY)) {
                 playerY -= speed * delta;
@@ -188,7 +190,17 @@ public class Player {
         }
 
         this.collisionBox.setLocation((int) playerX + 4, (int) playerY + 6);
+
+        // update the size and location of player's hit box accordingly
         this.hitBox.setLocation((int) playerX + 4, (int) playerY + 8);
+        switch (facingDirection) {
+            case UP, DOWN:
+                hitBox.setSize(8, 10);
+                break;
+            case LEFT, RIGHT:
+                hitBox.setSize(8, 15);
+                break;
+        }
     }
 
     private boolean isCellBlocked(float x, float y) {
@@ -322,28 +334,28 @@ public class Player {
         for (int col = 0; col < ANIMATION_FRAMES; col++) {
             walkFrames.add(new TextureRegion(spriteSheet, col * 32, 4 * FRAME_HEIGHT, 32, 32));
         }
-        animationMap.put("attack-down", new Animation<>(.15f, walkFrames));
+        animationMap.put("attack-down", new Animation<>(.12f, walkFrames));
         walkFrames.clear();
 
         // attacking face up (32 x 32, 6th row)
         for (int col = 0; col < ANIMATION_FRAMES; col++) {
             walkFrames.add(new TextureRegion(spriteSheet, col * 32, 5 * FRAME_HEIGHT, 32, 32));
         }
-        animationMap.put("attack-up", new Animation<>(.15f, walkFrames));
+        animationMap.put("attack-up", new Animation<>(.12f, walkFrames));
         walkFrames.clear();
 
         // attacking face right (32 x 32, 7th row)
         for (int col = 0; col < ANIMATION_FRAMES; col++) {
             walkFrames.add(new TextureRegion(spriteSheet, col * 32, 6 * FRAME_HEIGHT, 32, 32));
         }
-        animationMap.put("attack-right", new Animation<>(.15f, walkFrames));
+        animationMap.put("attack-right", new Animation<>(.12f, walkFrames));
         walkFrames.clear();
 
         // attacking face left (32 x 32, 8th row)
         for (int col = 0; col < ANIMATION_FRAMES; col++) {
             walkFrames.add(new TextureRegion(spriteSheet, col * 32, 7 * FRAME_HEIGHT, 32, 32));
         }
-        animationMap.put("attack-left", new Animation<>(.15f, walkFrames));
+        animationMap.put("attack-left", new Animation<>(.12f, walkFrames));
         walkFrames.clear();
 
         return animationMap;
@@ -364,7 +376,7 @@ public class Player {
      * @see Player#update(float, int, int, int)
      */
     public boolean isSwingingSword() {
-        int frameIndex = (int) ((attackStateTime % (.15f * 4)) / .15f);
+        int frameIndex = (int) ((attackStateTime % (.12f * 4)) / .12f);
         if (frameIndex == 3) {
             return true;
         }
@@ -379,16 +391,39 @@ public class Player {
         }
     }
 
+    /**
+     * Applies a knockback effect to the player based on the position of the colliding mob.
+     * <p>
+     * This method sets the player into a knockedback state, where the player is momentarily pushed
+     * away from the mob they have collided with. The direction and distance of the knockback are
+     * determined by the player's current facing direction and the position of the mob. The
+     * {@code knockBackVector} is calculated to represent this direction and is scaled by the
+     * specified knockback distance. The method also initializes {@code knockBackTime} to
+     * {@code KNOCKBACKDURATION}, starting the timer for the knockback animation, and sets
+     * {@code beingKnockedBack} to true, indicating the player is in the knockback state.
+     * </p>
+     *
+     * @param mob The mob with which the player has collided. This is used to calculate the
+     *            direction of the knockback.
+     * @param knockBackDistance The distance the player should be knocked back. This value
+     *                          scales the {@code knockBackVector}.
+     * @throws NullPointerException if {@code mob} is null.
+     *
+     * @see Mob
+     */
     public void applyKnockBack(Mob mob, float knockBackDistance) {
-        knockBackVector = new Vector2(
-                this.playerX - mob.getX(),
-                this.playerY - mob.getY()
-        );
+        switch (facingDirection) {
+            case UP, DOWN:
+                knockBackVector = new Vector2(0, playerY - mob.getY());
+                break;
+            case LEFT, RIGHT:
+                knockBackVector = new Vector2(playerX - mob.getX(), 0);
+                break;
+        }
 
         knockBackVector.nor();
         knockBackVector.scl(knockBackDistance);
 
-        // set the knockBackTimer
         knockBackTime = KNOCKBACKDURATION;
         beingKnockedBack = true;
     }
