@@ -22,12 +22,14 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.Timer;
 
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+
 
 public class GameScreen implements Screen {
 
@@ -38,6 +40,14 @@ public class GameScreen implements Screen {
 
     private Player player;
     private Key key;
+
+    private Apple apple;
+
+    // location coordinates for hearts
+    private List<int[]> heartsPositions;
+
+    //list of hearts
+    private List<Heart> hearts;
 
     // initial coordinates for player's spawn point
     private float playerX;
@@ -81,10 +91,14 @@ public class GameScreen implements Screen {
     public GameScreen(MazeRunnerGame game, FileHandle mapLocation) {
         borderTiles = 20;
         mobsPositions = new ArrayList<>();
+        heartsPositions = new ArrayList<>();
         this.game = game;
         key = new Key(0f, 0f);
+        apple = new Apple(0f,0f);
+
         exits = new Array<>();
         map = loadMap(mapLocation);
+        hearts = spawnHearts(heartsPositions);
         mobs = spawnMobs(mobsPositions);
         this.player = new Player(playerX, playerY, (TiledMapTileLayer) map.getLayers().get(1));
         renderer = new OrthogonalTiledMapRenderer(map);
@@ -203,6 +217,52 @@ public class GameScreen implements Screen {
                 hasKeyIndicator.setText("Has Key: " + player.isHasKey());
             }
         }
+
+        //check if the player has obtained the heart;
+        Iterator<Heart> heartIterator = hearts.iterator();
+        while (heartIterator.hasNext()) {
+            Heart heart = heartIterator.next();
+
+            // 更新和绘制hearts的代码...
+            heart.update(Gdx.graphics.getDeltaTime());
+            heart.draw(renderer.getBatch());
+
+            // 检查玩家是否与hearts发生碰撞的代码...
+            if (player.getCollisionBox().intersects(heart.getHitBox())) {
+                // 处理玩家拾取hearts的逻辑...
+                keyCollectedSound.play();
+                if (player.getPlayerLives() < 3) {
+                    player.setPlayerLives(player.getPlayerLives() + 1);
+                }
+                // 移除被拾取的hearts
+                heartIterator.remove();
+            }
+        }
+
+        if (apple != null) {
+            apple.update(Gdx.graphics.getDeltaTime());
+            apple.draw(renderer.getBatch());
+
+            // Check if player collides with apple
+            if (player.getCollisionBox().intersects(apple.getHitBox())) {
+                apple = null;
+                keyCollectedSound.play();
+                // Increase player movement speed and set a timer to return to normal speed after 5 seconds
+                player.increaseSpeed();
+                Timer.instance().scheduleTask(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        //Return to normal speed
+                        player.resetSpeed();
+                    }
+                }, 5);
+
+            }
+        }
+
+
+
+
 
         player.update(Gdx.graphics.getDeltaTime(), mapWidth, mapHeight, borderTiles);
         player.draw(renderer.getBatch());
@@ -324,7 +384,11 @@ public class GameScreen implements Screen {
                         mobsPositions.add(new int[]{4, x * 16, y * 16});
                     } else if (properties.getProperty(key).equals("5")) {
                         this.key.setPosition(x * 16, y * 16);
-                    } else {
+                    } else if (properties.getProperty(key).equals("6")) {
+                       heartsPositions.add(new int[]{6,x * 16,y * 16});
+                    } else if (properties.getProperty(key).equals("7")) {
+                        this.apple.setPosition(x*16,y*16);
+                    }else {
                         if (properties.getProperty(key).equals("1")) {
                             playerX = x * 16f;
                             playerY = y * 16f;
@@ -357,6 +421,16 @@ public class GameScreen implements Screen {
             }
         }
         return mobs;
+    }
+
+    private List<Heart> spawnHearts(List<int[]> heartsPositions) {
+        List<Heart> hearts = new ArrayList<>();
+        for (int[] coordinates : heartsPositions) {
+            if (coordinates[0] == 6) {
+                hearts.add(new Heart(coordinates[1], coordinates[2]));
+            }
+        }
+        return hearts;
     }
 
     @Override
@@ -451,6 +525,22 @@ public class GameScreen implements Screen {
         this.mobs = mobs;
     }
 
+    public List<int[]> getHeartsPositions() {
+        return heartsPositions;
+    }
+
+    public void setHeartsPositions(List<int[]> heartsPositions) {
+        this.heartsPositions = heartsPositions;
+    }
+
+    public List<Heart> getHearts() {
+        return hearts;
+    }
+
+    public void setHearts(List<Heart> hearts) {
+        this.hearts = hearts;
+    }
+
     public int getMapWidth() {
         return mapWidth;
     }
@@ -498,6 +588,8 @@ public class GameScreen implements Screen {
     public void setShapeRenderer(ShapeRenderer shapeRenderer) {
         this.shapeRenderer = shapeRenderer;
     }
+
+
 
     @Override
     public void dispose() {

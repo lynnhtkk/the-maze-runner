@@ -393,6 +393,17 @@ public class Player {
         beingKnockedBack = true;
     }
 
+    public void increaseSpeed() {
+        // When hitting an apple, increase speed
+        speed *= 2;
+    }
+
+    public void resetSpeed() {
+        // Return to normal speed
+        speed = 80f;
+    }
+
+
     public Texture getSpriteSheet() {
         return spriteSheet;
     }
