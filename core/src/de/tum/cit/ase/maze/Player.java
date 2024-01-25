@@ -72,7 +72,7 @@ public class Player {
         attacking = false;
         attackStateTime = 0f;
         attackBox = new Rectangle((int) playerX, (int) playerY, 0, 0);
-        attackSound = Gdx.audio.newSound(Gdx.files.internal("attack.wav"));
+        attackSound = Gdx.audio.newSound(Gdx.files.internal("swing.wav"));
         knockBackTime = 0f;
         KNOCKBACKDURATION = 1f;
         beingKnockedBack = false;
