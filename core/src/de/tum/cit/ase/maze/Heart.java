@@ -20,11 +20,13 @@ public class Heart {
     Texture heartTextureSheet;
     Animation<TextureRegion> heartAnimation;
 
+    Array<TextureRegion> animationFrames;
+
     public Heart(float x, float y) {
         this.x = x;
         this.y = y;
         this.sinusInput = 0f;
-        this.hitBox = new Rectangle((int) x + 3, (int) y + 3, 10, 10);
+        this.hitBox = new Rectangle((int) x, (int) y, 16, 16);
         this.heartTextureSheet = new Texture(Gdx.files.internal("heart.png"));
         this.heartAnimation = loadAnimation();
     }
@@ -32,7 +34,7 @@ public class Heart {
     private Animation<TextureRegion> loadAnimation() {
         int FRAMES = 4;
         int FRAME_SIZE = 32;
-        Array<TextureRegion> animationFrames = new Array<>(TextureRegion.class);
+        animationFrames = new Array<>(TextureRegion.class);
         for (int col = 0; col < FRAMES; col++) {
             animationFrames.add(new TextureRegion(heartTextureSheet, col * FRAME_SIZE, 0, FRAME_SIZE, FRAME_SIZE));
         }
@@ -41,7 +43,7 @@ public class Heart {
 
     public void update(float delta) {
         sinusInput += delta;
-        hitBox.setLocation((int) x + 3, (int) y + 3);
+        hitBox.setLocation((int) x + 8, (int) y + 8);
     }
 
     public void draw(Batch batch) {
@@ -49,8 +51,8 @@ public class Heart {
                 heartAnimation.getKeyFrame(sinusInput, true),
                 x,
                 y,
-                16,
-                16
+                32,
+                32
         );
     }
 

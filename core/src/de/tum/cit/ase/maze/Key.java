@@ -19,6 +19,7 @@ public class Key {
 
     Texture keyTextureSheet;
     Animation<TextureRegion> keyAnimation;
+    Array<TextureRegion> animationFrames;
 
     public Key(float x, float y) {
         this.x = x;
@@ -32,7 +33,7 @@ public class Key {
     private Animation<TextureRegion> loadAnimation() {
         int FRAMES = 4;
         int FRAME_SIZE = 16;
-        Array<TextureRegion> animationFrames = new Array<>(TextureRegion.class);
+        animationFrames = new Array<>(TextureRegion.class);
         for (int col = 0; col < FRAMES; col++) {
             animationFrames.add(new TextureRegion(keyTextureSheet, col * FRAME_SIZE, 0, FRAME_SIZE, FRAME_SIZE));
         }

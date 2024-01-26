@@ -30,6 +30,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+
+
 
 public class GameScreen implements Screen {
 
@@ -78,6 +81,8 @@ public class GameScreen implements Screen {
 
     // dummy HUD
     private Stage stage;
+    private Table table;
+    private Image heart1, heart2, heart3, keyImage;
     private Label playerLivesLabel;
     private Label hasKeyIndicator;
     private Rectangle spriteBox;
@@ -115,23 +120,41 @@ public class GameScreen implements Screen {
         victorySound = Gdx.audio.newSound(Gdx.files.internal("victory.wav"));
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("game-over.wav"));
 
+        //hud
         stage = new Stage(new ScreenViewport(new OrthographicCamera()), game.getBatch());
-
+        // Create a table that fills the entire stage
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
 
-        table.top().left();
-        playerLivesLabel = new Label("", game.getSkin());
-        playerLivesLabel.setAlignment(Align.left);
-        table.add(playerLivesLabel).padLeft(20).left().row();
-        hasKeyIndicator = new Label("Has Key: false", game.getSkin());
-        hasKeyIndicator.setAlignment(Align.left);
-        table.add(hasKeyIndicator).padLeft(20).left().row();
+        // Initialize heart icons
+        heart1 = new Image(hearts.get(0).animationFrames.first());
+        heart2 = new Image(hearts.get(0).animationFrames.first());
+        heart3 = new Image(hearts.get(0).animationFrames.first());
+        heart1.setScale(5f);
+        heart2.setScale(5f);
+        heart3.setScale(5f);
+
+        // Initialize key icon
+        keyImage = new Image(key.animationFrames.first());
+        keyImage.setScale(5f);
+
+        table.align(Align.topLeft);
+        table.padTop(0).padLeft(0);
+
+        table.add(heart1).padRight(50).padTop(100);
+        table.add(heart2).padRight(50).padTop(100);
+        table.add(heart3).padRight(50).padTop(100);
+
+        table.row();
+
+        table.add(keyImage).colspan(1).padTop(25).padLeft(25);
+
     }
 
     @Override
     public void show() {
+
 
     }
 
@@ -216,7 +239,7 @@ public class GameScreen implements Screen {
             if (key.getHitBox().intersects(player.getCollisionBox())) {
                 player.setHasKey(true);
                 keyCollectedSound.play();
-                hasKeyIndicator.setText("Has Key: " + player.isHasKey());
+                //hasKeyIndicator.setText("Has Key: " + player.isHasKey());
             }
         }
 
@@ -225,18 +248,20 @@ public class GameScreen implements Screen {
         while (heartIterator.hasNext()) {
             Heart heart = heartIterator.next();
 
-            // 更新和绘制hearts的代码...
+            // Update and draw the hearts
             heart.update(Gdx.graphics.getDeltaTime());
             heart.draw(renderer.getBatch());
 
-            // 检查玩家是否与hearts发生碰撞的代码...
+            //shapeRenderer.rect(heart.getHitBox().x, heart.getHitBox().y, heart.getHitBox().width, heart.getHitBox().height);
+
+            //  Check if the player collides with the hearts
             if (player.getCollisionBox().intersects(heart.getHitBox())) {
-                // 处理玩家拾取hearts的逻辑...
+
                 keyCollectedSound.play();
                 if (player.getPlayerLives() < 3) {
                     player.setPlayerLives(player.getPlayerLives() + 1);
                 }
-                // 移除被拾取的hearts
+                // Update and draw the hearts
                 heartIterator.remove();
             }
         }
@@ -292,9 +317,26 @@ public class GameScreen implements Screen {
         shapeRenderer.end();
         // end of shapeRenderer
 
-        playerLivesLabel.setText("Player's Health: " + player.getPlayerLives());
+//        playerLivesLabel.setText("Player's Health: " + player.getPlayerLives());
+//        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+//        stage.draw();
+
+        updateHUD();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+
+    }
+    private void updateHUD() {
+        int health = player.getPlayerLives();
+        boolean hasKey = player.isHasKey();
+
+        // Update the visibility of heart icons based on player's health
+        heart1.setVisible(health >= 1);
+        heart2.setVisible(health >= 2);
+        heart3.setVisible(health >= 3);
+
+        // Update the visibility of the key icon based on whether the player has a key
+        keyImage.setVisible(hasKey);
     }
 
     private void loadTileSet() {

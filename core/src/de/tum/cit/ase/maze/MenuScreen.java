@@ -57,7 +57,7 @@ public class MenuScreen implements Screen {
 
                     @Override
                     public void onError(Exception exception) {
-
+                        System.out.println(exception);
                     }
                 });
             }
