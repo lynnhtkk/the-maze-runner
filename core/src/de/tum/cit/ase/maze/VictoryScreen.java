@@ -29,6 +29,25 @@ public class VictoryScreen implements Screen {
     private final Stage stage;
     private Texture backgroundTexture;
 
+    /**
+     * Constructs a VictoryScreen for the MazeRunnerGame.
+     * <p>
+     * This constructor initializes the VictoryScreen with a reference to the MazeRunnerGame instance.
+     * It sets up the camera and viewport to define how the game's UI is projected onto the screen.
+     * A new stage is created with the specified viewport and the game's batch for drawing.
+     * Additionally, the constructor calls methods to add a background image and interactive buttons
+     * to the victory screen. This setup ensures that the victory screen is ready to display with all
+     * necessary UI elements when the player wins the game.
+     * </p>
+     *
+     * @param game The MazeRunnerGame instance this menu screen is a part of. This is used to access
+     *             game-wide properties and functionalities.
+     *
+     * @see MazeRunnerGame
+     * @see OrthographicCamera
+     * @see FillViewport
+     * @see Stage
+     */
     public VictoryScreen(MazeRunnerGame game) {
         this.game = game;
         camera = new OrthographicCamera();
@@ -40,6 +59,27 @@ public class VictoryScreen implements Screen {
 
         // add buttons
         addButtons();
+    }
+
+    /**
+     * Renders the victory screen.
+     * <p>
+     * This method is an override of the render function used to draw the victory screen.
+     * It primarily deals with rendering UI elements like buttons. The method clears the screen
+     * and then updates and draws the stage, which contains the UI elements. The {@code stage.act}
+     * method is called with a delta time, which updates the state of the UI elements.
+     * Following this, {@code stage.draw} is used to render the UI elements on the screen.
+     * This method ensures that the victory screen is appropriately updated and drawn at each frame refresh.
+     * </p>
+     *
+     * @param delta The time span between the current and last frame in seconds, used for updating
+     *              the stage's act method.
+     */
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.draw();
     }
 
     /**
@@ -120,25 +160,33 @@ public class VictoryScreen implements Screen {
     }
 
 
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-        stage.draw();
-    }
-
+    /**
+     * Sets up the input processor when the screen is shown.
+     * <p>
+     * This method is called when this screen becomes the current screen for a {@link MazeRunnerGame}.
+     * It sets the input processor to the stage, enabling the screen to receive and handle
+     * user input events through the stage's actors.
+     * </p>
+     */
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
+    /**
+     * Updates the viewport of the stage when the screen size changes.
+     * <p>
+     * This method is called when the screen size is changed. It adjusts the viewport of
+     * the stage to match the new screen dimensions, ensuring that UI elements are scaled
+     * and positioned correctly according to the new size.
+     * </p>
+     *
+     * @param width The new width of the screen.
+     * @param height The new height of the screen.
+     */
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        Image background = (Image) stage.getRoot().findActor("background");
-        if (background != null) {
-            background.setSize(stage.getWidth(), stage.getHeight());
-        }
     }
 
     @Override
@@ -160,6 +208,15 @@ public class VictoryScreen implements Screen {
         return stage;
     }
 
+    /**
+     * Disposes of the resources used by the VictoryScreen.
+     * <p>
+     * This method is called when the MenuScreen is no longer needed and is being removed from memory.
+     * It ensures that the resources, particularly the stage and the background texture, are properly
+     * disposed of. This is important for preventing memory leaks by freeing up the resources that
+     * are no longer in use. The method overrides the dispose method of the parent class.
+     * </p>
+     */
     @Override
     public void dispose() {
         stage.dispose();
