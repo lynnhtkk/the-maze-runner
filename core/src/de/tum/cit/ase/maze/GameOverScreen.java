@@ -31,7 +31,7 @@ public class GameOverScreen implements Screen {
 
         Viewport viewport = new ScreenViewport(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         stage = new Stage(viewport, game.getBatch());
-        backgroundTexture = game.getGameOverBackgroundTexture();
+        backgroundTexture = new Texture(Gdx.files.internal("menu_screen_background.png"));
 
 
         Image background = new Image(new TextureRegion(backgroundTexture));

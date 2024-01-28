@@ -32,11 +32,6 @@ public class MazeRunnerGame extends Game {
     private Music menuScreenMusic;
     private Music gameScreenMusic;
 
-    private Texture menuBackgroundTexture;
-    private Texture pauseBackgroundTexture;
-    private Texture victoryBackgroundTexture;
-    private Texture gameOverBackgroundTexture;
-
 
     public MazeRunnerGame(NativeFileChooser fileChooser) {
         super();
@@ -56,12 +51,6 @@ public class MazeRunnerGame extends Game {
         gameScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("pixel_sprinter_loop.mp3"));
         gameScreenMusic.setLooping(true);
         gameScreenMusic.setVolume(.2f);
-
-        //background image
-        menuBackgroundTexture = new Texture(Gdx.files.internal("menubackgroundimage.png"));
-        pauseBackgroundTexture = new Texture(Gdx.files.internal("menubackgroundimage.png"));
-        victoryBackgroundTexture = new Texture(Gdx.files.internal("menubackgroundimage.png"));
-        gameOverBackgroundTexture = new Texture(Gdx.files.internal("menubackgroundimage.png"));
 
         // instantiate screen instances
         this.menuScreen = new MenuScreen(this);
@@ -106,23 +95,6 @@ public class MazeRunnerGame extends Game {
         gameScreenMusic.pause();
         this.setScreen(victoryScreen);
     }
-
-    public Texture getMenuBackgroundTexture() {
-        return menuBackgroundTexture;
-    }
-
-    public Texture getPauseBackgroundTexture() {
-        return pauseBackgroundTexture;
-    }
-
-    public Texture getVictoryBackgroundTexture() {
-        return victoryBackgroundTexture;
-    }
-
-    public Texture getGameOverBackgroundTexture() {
-        return gameOverBackgroundTexture;
-    }
-
 
     public SpriteBatch getBatch() {
         return batch;
