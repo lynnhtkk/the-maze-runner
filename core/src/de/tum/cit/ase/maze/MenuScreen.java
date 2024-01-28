@@ -5,8 +5,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -19,26 +22,39 @@ import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
 public class MenuScreen implements Screen {
 
     private final Stage stage;
+    private final Texture backgroundTexture;
 
     public MenuScreen(MazeRunnerGame game) {
         OrthographicCamera camera = new OrthographicCamera();
         camera.zoom = 1.5f;
 
-        Viewport viewport = new ScreenViewport(camera);
-        stage = new Stage(viewport, game.getBatch());           // Create a stage for UI elements
+        Viewport viewport = new ScreenViewport(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        stage = new Stage(viewport, game.getBatch());
+        backgroundTexture = game.getMenuBackgroundTexture();
 
-        Table table = new Table();      // create a table for layout
-        table.setFillParent(true);      // make the table fill the entire stage
-        stage.addActor(table);          // add the table to the stage
 
-        // add a label as a title
-        table.add(new Label("Welcome to the Maze Runner", game.getSkin(), "title")).padBottom(80).row();
+        Image background = new Image(new TextureRegion(backgroundTexture));
+        background.setName("background");
+        background.setSize(stage.getWidth(), stage.getHeight());
+        stage.addActor(background);
 
-        table.defaults().padBottom(10);
 
-        // create and add a button to go to the game screen
+
+        //Set the background of the stage to Image
+        stage.addActor(background);
+
+
+        Table buttonTable = new Table();
+        buttonTable.setFillParent(true);
+        stage.addActor(buttonTable);
+
+        buttonTable.add(new Label("Welcome to the Maze Runner", game.getSkin(), "title")).padBottom(80).row();
+
+        buttonTable.defaults().padBottom(10);
+
+        // Create and add buttons to enter the game interface
         TextButton goToGameButton = new TextButton("Play Game", game.getSkin());
-        table.add(goToGameButton).width(300).row();
+        buttonTable.add(goToGameButton).width(300).padBottom(10).row();
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -63,10 +79,9 @@ public class MenuScreen implements Screen {
             }
         });
 
-        // create and add a button to go to the game screen
+        // Create and add a button to exit the game
         TextButton exitButton = new TextButton("Exit Game", game.getSkin());
-        table.add(exitButton).width(300).row();
-
+        buttonTable.add(exitButton).width(300).padBottom(10).row();
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -77,7 +92,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void show() {
-        // set the input processor to the stage so it can receive input events
+
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -91,6 +106,10 @@ public class MenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        Image background = (Image) stage.getRoot().findActor("background");
+        if (background != null) {
+            background.setSize(stage.getWidth(), stage.getHeight());
+        }
     }
 
     @Override
@@ -115,5 +134,6 @@ public class MenuScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        backgroundTexture.dispose();
     }
 }
