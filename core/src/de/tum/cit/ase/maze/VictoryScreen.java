@@ -87,7 +87,7 @@ public class VictoryScreen implements Screen {
      * <p>
      * This method loads and sets a background image for the victory screen. The image is obtained
      * from the assets folder ("victory_screen_background.png"). The image is set to fill
-     * the entire screen, ensuring that it covers the menu screen's full area.
+     * the entire screen, ensuring that it covers the victory screen's full area.
      * </p>
      */
     private void addBackgroundImage() {
@@ -99,6 +99,24 @@ public class VictoryScreen implements Screen {
         stage.addActor(background);
     }
 
+    /**
+     * Adds interactive buttons to the victory screen.
+     * <p>
+     * This method sets up and adds UI elements, particularly buttons, to the victory screen.
+     * The buttons include:
+     * <ul>
+     *     <li>'Play Again' button: Allows the player to play the same level again.</li>
+     *     <li>'Choose New Map' button: Allows the player to choose a map file and start the game in initial state.</li>
+     *     <li>'Go to Main Menu' button: Allows the player to go back to the menu screen.</li>
+     * </ul>
+     * The method also adds a label to inform the player what state the game is in.
+     * The buttons and label are organized within a table layout for consistent and manageable positioning.
+     * Listeners are attached to the buttons to handle the respective actions when they are clicked.
+     * </p>
+     *
+     * @see NativeFileChooserConfiguration
+     * @see NativeFileChooserCallback
+     */
     private void addButtons() {
         // add a table onto stage
         Table table = new Table();
@@ -206,6 +224,38 @@ public class VictoryScreen implements Screen {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public MazeRunnerGame getGame() {
+        return game;
+    }
+
+    public void setGame(MazeRunnerGame game) {
+        this.game = game;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(OrthographicCamera camera) {
+        this.camera = camera;
+    }
+
+    public Viewport getViewport() {
+        return viewport;
+    }
+
+    public void setViewport(Viewport viewport) {
+        this.viewport = viewport;
+    }
+
+    public Texture getBackgroundTexture() {
+        return backgroundTexture;
+    }
+
+    public void setBackgroundTexture(Texture backgroundTexture) {
+        this.backgroundTexture = backgroundTexture;
     }
 
     /**

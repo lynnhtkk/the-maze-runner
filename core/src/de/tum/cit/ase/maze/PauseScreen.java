@@ -29,6 +29,24 @@ public class PauseScreen implements Screen {
     private final Stage stage;
     private Texture backgroundTexture;
 
+    /**
+     * Constructs a PauseScreen for the MazeRunnerGame.
+     * <p>
+     * This constructor initializes the PauseScreen with a reference to the MazeRunnerGame instance.
+     * It sets up the camera and viewport to define how the game's UI is projected onto the screen.
+     * A new stage is created with the specified viewport and the game's batch for drawing.
+     * Additionally, the constructor calls methods to add a background image and interactive buttons
+     * to the menu screen. This setup ensures that the pause screen is ready to display when the player pressed 'Esc'.
+     * </p>
+     *
+     * @param game The MazeRunnerGame instance this menu screen is a part of. This is used to access
+     *             game-wide properties and functionalities.
+     *
+     * @see MazeRunnerGame
+     * @see OrthographicCamera
+     * @see FillViewport
+     * @see Stage
+     */
     public PauseScreen(MazeRunnerGame game) {
         this.game = game;
         camera = new OrthographicCamera();
@@ -92,9 +110,9 @@ public class PauseScreen implements Screen {
      *         This button triggers a file chooser for selecting the map and then transitions.</li>
      *     <li>'Go to Menu' button: Allows the player to go back to the menu screen.</li>
      * </ul>
-     * The method also adds a label to inform the player what state the game is in. The buttons and label are organized
-     * within a table layout for consistent and manageable positioning. Listeners are attached
-     * to the buttons to handle the respective actions when they are clicked.
+     * The method also adds a label to inform the player what state the game is in.
+     * The buttons and label are organized within a table layout for consistent and manageable positioning.
+     * Listeners are attached to the buttons to handle the respective actions when they are clicked.
      * </p>
      *
      * @see NativeFileChooserConfiguration
@@ -223,6 +241,38 @@ public class PauseScreen implements Screen {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public MazeRunnerGame getGame() {
+        return game;
+    }
+
+    public void setGame(MazeRunnerGame game) {
+        this.game = game;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(OrthographicCamera camera) {
+        this.camera = camera;
+    }
+
+    public Viewport getViewport() {
+        return viewport;
+    }
+
+    public void setViewport(Viewport viewport) {
+        this.viewport = viewport;
+    }
+
+    public Texture getBackgroundTexture() {
+        return backgroundTexture;
+    }
+
+    public void setBackgroundTexture(Texture backgroundTexture) {
+        this.backgroundTexture = backgroundTexture;
     }
 
     /**
