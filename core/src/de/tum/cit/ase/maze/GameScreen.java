@@ -131,13 +131,13 @@ public class GameScreen implements Screen {
         heart1 = new Image(hearts.get(0).animationFrames.first());
         heart2 = new Image(hearts.get(0).animationFrames.first());
         heart3 = new Image(hearts.get(0).animationFrames.first());
-        heart1.setScale(5f);
-        heart2.setScale(5f);
-        heart3.setScale(5f);
+        heart1.setScale(4f);
+        heart2.setScale(4f);
+        heart3.setScale(4f);
 
         // Initialize key icon
-        keyImage = new Image(key.animationFrames.first());
-        keyImage.setScale(5f);
+        keyImage = new Image(key.getAnimationFrames().first());
+        keyImage.setScale(4f);
 
         table.align(Align.topLeft);
         table.padTop(0).padLeft(0);
