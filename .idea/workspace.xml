@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="73a7d9a8-19e7-48fb-aabd-0522198ff136" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/core">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/desktop">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Class" />
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2ZlESWY9Odl88FBMNxBsCvTbXfd" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/linnhtet/IdeaProjects/fophn2324infun2324projectworkx-g34/assets&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets" />
+      <recent name="$PROJECT_DIR$/assets/craft" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Run Game">
+    <configuration name="fophn2324infun2324projectworkx-g34:core [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/core" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.Run Game" />
+      <item itemvalue="Gradle.fophn2324infun2324projectworkx-g34:core [build]" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.fophn2324infun2324projectworkx-g34:core [build]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="73a7d9a8-19e7-48fb-aabd-0522198ff136" name="Changes" comment="" />
+      <created>1702988265372</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1702988265372</updated>
+      <workItem from="1702988266488" duration="4875000" />
+      <workItem from="1703016017075" duration="8000" />
+      <workItem from="1703016323947" duration="10000" />
+      <workItem from="1703090820938" duration="708000" />
+      <workItem from="1703197751494" duration="414000" />
+      <workItem from="1703198282878" duration="14000" />
+      <workItem from="1703201520803" duration="455000" />
+      <workItem from="1703202929325" duration="1792000" />
+      <workItem from="1703242859018" duration="6219000" />
+      <workItem from="1703280911631" duration="6382000" />
+      <workItem from="1703327817876" duration="871000" />
+      <workItem from="1703362405158" duration="222000" />
+      <workItem from="1703362720092" duration="17000" />
+      <workItem from="1703365525236" duration="57000" />
+      <workItem from="1703368296337" duration="682000" />
+      <workItem from="1703372842824" duration="605000" />
+      <workItem from="1703413477962" duration="222000" />
+      <workItem from="1703413817044" duration="600000" />
+      <workItem from="1703517687248" duration="598000" />
+      <workItem from="1703616063253" duration="639000" />
+      <workItem from="1703807524299" duration="74000" />
+      <workItem from="1703864906637" duration="42000" />
+      <workItem from="1703875245445" duration="81000" />
+      <workItem from="1703875330433" duration="7634000" />
+      <workItem from="1704315451490" duration="5119000" />
+      <workItem from="1704666617449" duration="976000" />
+      <workItem from="1704716692788" duration="496000" />
+      <workItem from="1704748617733" duration="603000" />
+      <workItem from="1704756040064" duration="1491000" />
+      <workItem from="1704789277605" duration="6000" />
+      <workItem from="1704794455921" duration="1418000" />
+      <workItem from="1704920873655" duration="4042000" />
+      <workItem from="1704973780866" duration="3313000" />
+      <workItem from="1705140220516" duration="6439000" />
+      <workItem from="1705149185867" duration="668000" />
+      <workItem from="1705176925471" duration="1438000" />
+      <workItem from="1705184281420" duration="4412000" />
+      <workItem from="1705323200871" duration="25912000" />
+      <workItem from="1705433194055" duration="6846000" />
+      <workItem from="1705444688185" duration="8000" />
+      <workItem from="1705522269466" duration="421000" />
+      <workItem from="1705536663671" duration="1169000" />
+      <workItem from="1705595347328" duration="627000" />
+      <workItem from="1705707458986" duration="703000" />
+      <workItem from="1705710136736" duration="4963000" />
+      <workItem from="1705744670312" duration="23066000" />
+      <workItem from="1705850053155" duration="319000" />
+      <workItem from="1705880518430" duration="4339000" />
+      <workItem from="1705885141134" duration="554000" />
+      <workItem from="1705919778099" duration="11855000" />
+      <workItem from="1705957503358" duration="1742000" />
+      <workItem from="1705999129744" duration="1416000" />
+      <workItem from="1706001611294" duration="4237000" />
+      <workItem from="1706040335996" duration="14739000" />
+      <workItem from="1706087403322" duration="4447000" />
+      <workItem from="1706130428808" duration="250000" />
+      <workItem from="1706131709029" duration="5428000" />
+      <workItem from="1706173635471" duration="7693000" />
+      <workItem from="1706188955206" duration="389000" />
+      <workItem from="1706191863798" duration="4348000" />
+      <workItem from="1706287704952" duration="704000" />
+      <workItem from="1706306451565" duration="846000" />
+      <workItem from="1706397676929" duration="5911000" />
+      <workItem from="1706439277835" duration="19165000" />
+      <workItem from="1706489575099" duration="1460000" />
+      <workItem from="1706491043427" duration="1512000" />
+      <workItem from="1706522485845" duration="18328000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
