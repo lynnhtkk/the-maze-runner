@@ -44,13 +44,13 @@ public class GameScreen implements Screen {
     private Player player;
     private Key key;
 
-    private Apple apple;
+    private SpeedBuff apple;
 
     // location coordinates for hearts
     private List<int[]> heartsPositions;
 
     //list of hearts
-    private List<Heart> hearts;
+    private List<PowerBuff> hearts;
 
     // initial coordinates for player's spawn point
     private float playerX;
@@ -99,7 +99,7 @@ public class GameScreen implements Screen {
         heartsPositions = new ArrayList<>();
         this.game = game;
         key = new Key(0f, 0f);
-        apple = new Apple(0f,0f);
+        apple = new SpeedBuff(0f,0f);
 
         exits = new Array<>();
         map = loadMap(mapLocation);
@@ -244,9 +244,9 @@ public class GameScreen implements Screen {
         }
 
         //check if the player has obtained the heart;
-        Iterator<Heart> heartIterator = hearts.iterator();
+        Iterator<PowerBuff> heartIterator = hearts.iterator();
         while (heartIterator.hasNext()) {
-            Heart heart = heartIterator.next();
+            PowerBuff heart = heartIterator.next();
 
             // Update and draw the hearts
             heart.update(Gdx.graphics.getDeltaTime());
@@ -467,11 +467,11 @@ public class GameScreen implements Screen {
         return mobs;
     }
 
-    private List<Heart> spawnHearts(List<int[]> heartsPositions) {
-        List<Heart> hearts = new ArrayList<>();
+    private List<PowerBuff> spawnHearts(List<int[]> heartsPositions) {
+        List<PowerBuff> hearts = new ArrayList<>();
         for (int[] coordinates : heartsPositions) {
             if (coordinates[0] == 6) {
-                hearts.add(new Heart(coordinates[1], coordinates[2]));
+                hearts.add(new PowerBuff(coordinates[1], coordinates[2]));
             }
         }
         return hearts;
@@ -577,11 +577,11 @@ public class GameScreen implements Screen {
         this.heartsPositions = heartsPositions;
     }
 
-    public List<Heart> getHearts() {
+    public List<PowerBuff> getHearts() {
         return hearts;
     }
 
-    public void setHearts(List<Heart> hearts) {
+    public void setHearts(List<PowerBuff> hearts) {
         this.hearts = hearts;
     }
 

@@ -1,3 +1,8 @@
+/**
+ * The SpeedBuff class represents a speed boost item(Apple) in a maze game. It includes functionality
+ * for updating its state, drawing on the screen, and managing its properties such as position
+ * and animation.
+ */
 package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
@@ -8,8 +13,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 import java.awt.*;
-
-public class Apple {
+/**
+ * Represents a speed boost item(Apple) with animation and collision properties.
+ */
+public class SpeedBuff {
     private float x;
     private float y;
 
@@ -19,16 +26,25 @@ public class Apple {
 
     Texture appleTextureSheet;
     Animation<TextureRegion> appleAnimation;
-
-    public Apple(float x, float y) {
+    /**
+     * Constructs a SpeedBuff object with the specified initial position.
+     *
+     * @param x The initial x-coordinate of the Apple.
+     * @param y The initial y-coordinate of the Apple.
+     */
+    public SpeedBuff(float x, float y) {
         this.x = x;
         this.y = y;
         sinusInput = 0f;
         hitBox = new Rectangle((int) x + 3, (int) y + 3, 10, 10);
-        appleTextureSheet = new Texture(Gdx.files.internal("Apple.png"));
+        appleTextureSheet = new Texture(Gdx.files.internal("apple.png"));
         appleAnimation = loadAnimation();
     }
-
+    /**
+     * Loads the animation frames from the texture sheet.
+     *
+     * @return The Animation object created from the loaded frames.
+     */
     private Animation<TextureRegion> loadAnimation() {
         int FRAMES = 4;
         int FRAME_SIZE = 16;
@@ -38,12 +54,20 @@ public class Apple {
         }
         return new Animation<>(.2f, animationFrames);
     }
-
+    /**
+     * Updates the Apple's state based on the elapsed time.
+     *
+     * @param delta The time elapsed since the last update.
+     */
     public void update(float delta) {
         sinusInput += delta;
         hitBox.setLocation((int) x + 3, (int) y + 3);
     }
-
+    /**
+     * Draws the Apple on the specified batch.
+     *
+     * @param batch The Batch used for rendering.
+     */
     public void draw(Batch batch) {
         batch.draw(
                 appleAnimation.getKeyFrame(sinusInput, true),
@@ -53,12 +77,17 @@ public class Apple {
                 16
         );
     }
-
+    /**
+     * Sets the position of the Apple.
+     *
+     * @param x The new x-coordinate.
+     * @param y The new y-coordinate.
+     */
     public void setPosition(float x, float y) {
         this.x = x;
         this.y = y;
     }
-
+    // Getters and Setters...
     public float getX() {
         return x;
     }
@@ -105,5 +134,11 @@ public class Apple {
 
     public void setAppleAnimation(Animation<TextureRegion> appleAnimation) {
         this.appleAnimation = appleAnimation;
+    }
+    /**
+     * Disposes of the resources used by the speed boost item.
+     */
+    public void dispose() {
+        appleTextureSheet.dispose();
     }
 }

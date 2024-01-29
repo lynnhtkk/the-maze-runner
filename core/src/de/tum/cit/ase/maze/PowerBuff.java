@@ -1,3 +1,8 @@
+/**
+ * The PowerBuff class represents a power-up item(Heart) in a maze game. It includes functionality
+ * for updating its state, drawing on the screen, and managing its properties such as position
+ * and animation.
+ */
 package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
@@ -8,8 +13,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 import java.awt.*;
-
-public class Heart {
+/**
+ * Represents a power-up item(Heart) with animation and collision properties.
+ */
+public class PowerBuff {
     private float x;
     private float y;
 
@@ -21,8 +28,13 @@ public class Heart {
     Animation<TextureRegion> heartAnimation;
 
     Array<TextureRegion> animationFrames;
-
-    public Heart(float x, float y) {
+    /**
+     * Constructs a PowerBuff object with the specified initial position.
+     *
+     * @param x The initial x-coordinate of the heart.
+     * @param y The initial y-coordinate of the heart.
+     */
+    public PowerBuff(float x, float y) {
         this.x = x;
         this.y = y;
         this.sinusInput = 0f;
@@ -30,7 +42,11 @@ public class Heart {
         this.heartTextureSheet = new Texture(Gdx.files.internal("heart.png"));
         this.heartAnimation = loadAnimation();
     }
-
+    /**
+     * Loads the animation frames from the texture sheet.
+     *
+     * @return The Animation object created from the loaded frames.
+     */
     private Animation<TextureRegion> loadAnimation() {
         int FRAMES = 4;
         int FRAME_SIZE = 32;
@@ -40,12 +56,20 @@ public class Heart {
         }
         return new Animation<>(.2f, animationFrames);
     }
-
+    /**
+     * Updates the heart's state based on the elapsed time.
+     *
+     * @param delta The time elapsed since the last update.
+     */
     public void update(float delta) {
         sinusInput += delta;
         hitBox.setLocation((int) x + 8, (int) y + 8);
     }
-
+    /**
+     * Draws the heart on the specified batch.
+     *
+     * @param batch The Batch used for rendering.
+     */
     public void draw(Batch batch) {
         batch.draw(
                 heartAnimation.getKeyFrame(sinusInput, true),
@@ -55,7 +79,7 @@ public class Heart {
                 32
         );
     }
-
+    // Getters and Setters...
     public float getX() {
         return x;
     }
@@ -103,6 +127,8 @@ public class Heart {
     public void setHeartAnimation(Animation<TextureRegion> heartAnimation) {
         this.heartAnimation = heartAnimation;
     }
-
+    /**
+     * Disposes of the resources used by the power-up.
+     */
     public void dispose(){heartTextureSheet.dispose();};
 }
