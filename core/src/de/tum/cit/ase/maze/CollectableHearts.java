@@ -16,7 +16,7 @@ import java.awt.*;
 /**
  * Represents a power-up item(Heart) with animation and collision properties.
  */
-public class PowerBuff {
+public class CollectableHearts {
     private float x;
     private float y;
 
@@ -34,7 +34,7 @@ public class PowerBuff {
      * @param x The initial x-coordinate of the heart.
      * @param y The initial y-coordinate of the heart.
      */
-    public PowerBuff(float x, float y) {
+    public CollectableHearts(float x, float y) {
         this.x = x;
         this.y = y;
         this.sinusInput = 0f;

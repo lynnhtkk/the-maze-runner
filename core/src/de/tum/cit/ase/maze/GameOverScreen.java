@@ -179,13 +179,20 @@ public class GameOverScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
+    /**
+     * Updates the viewport of the stage when the screen size changes.
+     * <p>
+     * This method is called when the screen size is changed. It adjusts the viewport of
+     * the stage to match the new screen dimensions, ensuring that UI elements are scaled
+     * and positioned correctly according to the new size.
+     * </p>
+     *
+     * @param width The new width of the screen.
+     * @param height The new height of the screen.
+     */
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        Image background = (Image) stage.getRoot().findActor("background");
-        if (background != null) {
-            background.setSize(stage.getWidth(), stage.getHeight());
-        }
     }
 
     @Override
