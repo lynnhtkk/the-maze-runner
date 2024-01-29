@@ -120,7 +120,7 @@ public class GameScreen implements Screen {
         victorySound = Gdx.audio.newSound(Gdx.files.internal("victory.wav"));
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("game-over.wav"));
 
-        //hud
+        // HUD display
         stage = new Stage(new ScreenViewport(new OrthographicCamera()), game.getBatch());
         // Create a table that fills the entire stage
         Table table = new Table();
@@ -149,12 +149,10 @@ public class GameScreen implements Screen {
         table.row();
 
         table.add(keyImage).colspan(1).padTop(25).padLeft(25);
-
     }
 
     @Override
     public void show() {
-
 
     }
 
@@ -286,10 +284,6 @@ public class GameScreen implements Screen {
 
             }
         }
-
-
-
-
 
         player.update(Gdx.graphics.getDeltaTime(), mapWidth, mapHeight, borderTiles);
         player.draw(renderer.getBatch());
