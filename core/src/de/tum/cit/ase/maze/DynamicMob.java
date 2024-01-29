@@ -10,6 +10,18 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * Represents a dynamic mob (moving entity) in the game.
+ * <p>
+ * This class extends the {@link Mob} class to create dynamic entities in the game that are capable
+ * of movement, reacting to attacks, and being killed. Unlike static mobs, dynamic mobs can move
+ * in random directions, are subject to knockback when attacked, and have a finite number of lives (typically three).
+ * Once all lives are lost, the dynamic mob is considered destroyed. The dynamic nature of these mobs
+ * adds complexity and challenge to the game, requiring players to interact with them in various ways.
+ * The class includes functionality for handling the mob's movement, response to attacks (including knockback),
+ * and tracking the number of lives for determining when the mob is destroyed.
+ * </p>
+ */
 public class DynamicMob extends Mob {
 
     private Animation<TextureRegion> animation;
