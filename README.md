@@ -76,10 +76,9 @@ To get started with Maze Runner, you'll need to set up your development environm
 Before you can run Maze Runner, ensure you have the following installed:
 
 - **Java**: The game is developed in Java, so you will need Java installed to run it. You can download 
-- the latest version of Java from [Oracle's Java Download Page](https://www.oracle.com/java/technologies/javase-downloads.html).
+the latest version of Java from [Oracle's Java Download Page](https://www.oracle.com/java/technologies/javase-downloads.html).
 - **IDE of Your Choice**: While Maze Runner can be built and run using any Java-compatible IDE, we recommend using an IDE 
-- such as [IntelliJ IDEA](https://www.jetbrains.com/idea/) (community edition suffices), 
-- [Eclipse](https://www.eclipse.org/), or [NetBeans](https://netbeans.apache.org/) for a smoother experience.
+such as [IntelliJ IDEA](https://www.jetbrains.com/idea/) (community edition suffices), [Eclipse](https://www.eclipse.org/), or [NetBeans](https://netbeans.apache.org/) for a smoother experience.
 
 Once you have these prerequisites installed, you're ready to clone the repository and start exploring Maze Runner.
 
@@ -87,7 +86,7 @@ Once you have these prerequisites installed, you're ready to clone the repositor
 
 To import the Maze Runner game project into your IDE, follow the instructions specific to your development environment:
 
-#### IntelliJ IDEA or Android Studio
+#### IntelliJ IDEA
 1. Open IntelliJ IDEA or Android Studio.
 2. Select `File -> Open` and navigate to the `build.gradle` file in your project.
 3. Choose `Open as Project`.
@@ -103,7 +102,7 @@ To import the Maze Runner game project into your IDE, follow the instructions sp
 
 After importing the project, you might need to refresh the Gradle project if some dependencies weren't downloaded yet:
 
-#### IntelliJ IDEA/Android Studio
+#### IntelliJ IDEA
 - Click the `Reimport all Gradle projects` button, which is represented by a pair of circling arrows at the top left in the Gradle tool window. This window can be accessed via `View -> Tool Windows -> Gradle`.
 
 #### Eclipse
