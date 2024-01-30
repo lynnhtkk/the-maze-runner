@@ -113,13 +113,16 @@ After importing the project, you might need to refresh the Gradle project if som
 If you want to execute your freshly imported project, you have to follow different steps, depending on your IDE and the platform you are targeting.
 
 #### In IDEA/Android Studio:
-1. Extend the Gradle tab on the right sight of your window ![Step 1 Screenshot](screenshots/gradle_run.png)
+1. Extend the Gradle tab on the right sight of your window <br>
+![Step 1 Screenshot](screenshots/gradle_run.png)
 2. Expand the tasks of your project and then select: `desktop -> other -> run`.
 
 **Alternatively**, you can create a run configuration:
 1. Open your `DesktopLauncher` class.
-2. Follow the steps described in the picture below. ![Step 1 Screenshot](screenshots/run_configuration_1.png)
-3. Make sure to set up the configuration as below. ![Step 1 Screenshot](screenshots/run_configuration_2.png)
+2. Follow the steps described in the picture below. <br>
+![Step 1 Screenshot](screenshots/run_configuration_1.png)
+3. Make sure to set up the configuration as below. <br>
+![Step 1 Screenshot](screenshots/run_configuration_2.png)
 > **Caution:** The VM Option `XstartOnFirstThread` is only required if you are running on macOS. Otherwise, delete this option.
 4. `Apply` the changes and `Run` the project.
 
