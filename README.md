@@ -29,16 +29,16 @@ Players have a chance to construct their own maps. Maps are stored in Java `prop
 allowing easy customization and creation of new mazes. 
 Each file contains key-value pairs representing the maze's layout:
 
-| Coordinate Key | Value | Object Type       |
-|----------------|-------|-------------------|
-| 0              | Wall  | Blocks the path   |
-| 1              | Player Spawn Point | Starting point for the player |
-| 2              | Exit  | Exit point of the maze |
-| 3              | Static Trap | Stationary hazard |
-| 4              | Dynamic Mob | Moving enemy |
-| 5              | Key   | Required to open the exit |
-| 6              | Additional Hearts | Grants extra life |
-| 7              | Speed Buff | Temporarily increases player's speed |
+| Values | Object Types       | Properties                           |
+|--------|--------------------|--------------------------------------|
+| 0      | Wall               | Blocks the path                      |
+| 1      | Player Spawn Point | Starting point for the player        |
+| 2      | Exit               | Exit point of the maze               |
+| 3      | Static Trap        | Stationary hazard                    |
+| 4      | Dynamic Mob        | Moving enemy                         |
+| 5      | Key                | Required to open the exit            |
+| 6      | Additional Hearts  | Grants extra life                    |
+| 7      | Speed Buff         | Temporarily increases player's speed |
 
 Each key in the properties file represents a coordinate in the format `x,y`, while the value determines the type of object present at that location.
 
@@ -111,18 +111,18 @@ After importing the project, you might need to refresh the Gradle project if som
 ### Getting it Running
 If you want to execute your freshly imported project, you have to follow different steps, depending on your IDE and the platform you are targeting.
 
-#### In IDEA/Android Studio:
+#### In IDEA:
 1. Extend the Gradle tab on the right sight of your window <br>
 ![Step 1 Screenshot](screenshots/gradle_run.png)
-2. Expand the tasks of your project and then select: `desktop -> other -> run`.
+2. Expand the tasks of your project and then select and run: `desktop -> Tasks -> other -> run`.
 
 **Alternatively**, you can create a run configuration:
-1. Open your `DesktopLauncher` class.
+1. Open the `DesktopLauncher` class.
 2. Follow the steps described in the picture below. <br>
 ![Step 1 Screenshot](screenshots/run_configuration_1.png)
 3. Make sure to set up the configuration as below. <br>
 ![Step 1 Screenshot](screenshots/run_configuration_2.png)
-> **Caution:** The VM Option `XstartOnFirstThread` is only required if you are running on macOS. Otherwise, delete this option.
+> **Note:** The VM Option `XstartOnFirstThread` is only required if you are running on macOS. Otherwise, delete this option.
 4. `Apply` the changes and `Run` the project.
 
 
