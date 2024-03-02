@@ -9,7 +9,11 @@ The game presents an exciting blend of exploration and strategy, set in a visual
 
 This game is my Project for the first semester at TUM Campus Heilbronn, BIE.
 
-![demo](screenshots/final_demo.gif)
+### DEMO
+
+![choose_file_demo](screenshots/choose_file_demo.gif)
+![attack_demo](screenshots/attack_demo.gif)
+![buffs_demo](screenshots/buffs_demo.gif)
 
 ## Game Mechanics
 
