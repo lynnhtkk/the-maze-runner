@@ -1,4 +1,6 @@
-package de.tum.cit.ase.maze;
+package de.tum.cit.ase.maze.constants;
+
+import de.tum.cit.ase.maze.screens.GameScreen;
 
 /**
  * Enumeration representing the various states of the game.

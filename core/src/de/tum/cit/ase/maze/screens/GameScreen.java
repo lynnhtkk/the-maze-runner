@@ -1,4 +1,4 @@
-package de.tum.cit.ase.maze;
+package de.tum.cit.ase.maze.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -29,6 +29,15 @@ import java.util.*;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import de.tum.cit.ase.maze.constants.GameState;
+import de.tum.cit.ase.maze.buffs.Key;
+import de.tum.cit.ase.maze.MazeRunnerGame;
+import de.tum.cit.ase.maze.buffs.CollectableHearts;
+import de.tum.cit.ase.maze.buffs.SpeedBuff;
+import de.tum.cit.ase.maze.entities.DynamicMob;
+import de.tum.cit.ase.maze.entities.Mob;
+import de.tum.cit.ase.maze.entities.Player;
+import de.tum.cit.ase.maze.entities.StaticMob;
 
 
 /**
@@ -450,9 +459,9 @@ public class GameScreen implements Screen {
         stage.addActor(table);
 
         // Initialize heart icons
-        heart1 = new Image(collectableHearts.get(0).animationFrames.first());
-        heart2 = new Image(collectableHearts.get(0).animationFrames.first());
-        heart3 = new Image(collectableHearts.get(0).animationFrames.first());
+        heart1 = new Image(collectableHearts.get(0).getAnimationFrames().first());
+        heart2 = new Image(collectableHearts.get(0).getAnimationFrames().first());
+        heart3 = new Image(collectableHearts.get(0).getAnimationFrames().first());
         heart1.setScale(4f);
         heart2.setScale(4f);
         heart3.setScale(4f);

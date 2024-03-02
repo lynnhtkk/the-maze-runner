@@ -1,4 +1,4 @@
-package de.tum.cit.ase.maze;
+package de.tum.cit.ase.maze.constants;
 
 /**
  * Enumeration representing the possible directions an entity can face.

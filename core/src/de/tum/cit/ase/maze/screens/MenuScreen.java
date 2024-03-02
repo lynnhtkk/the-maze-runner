@@ -1,4 +1,4 @@
-package de.tum.cit.ase.maze;
+package de.tum.cit.ase.maze.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -6,7 +6,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -16,12 +15,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import de.tum.cit.ase.maze.MazeRunnerGame;
+import de.tum.cit.ase.maze.helpers.FileChooserHelper;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
 
-public class VictoryScreen implements Screen {
+public class MenuScreen implements Screen {
 
     private MazeRunnerGame game;
     private OrthographicCamera camera;
@@ -30,14 +30,14 @@ public class VictoryScreen implements Screen {
     private Texture backgroundTexture;
 
     /**
-     * Constructs a VictoryScreen for the MazeRunnerGame.
+     * Constructs a MenuScreen for the MazeRunnerGame.
      * <p>
-     * This constructor initializes the VictoryScreen with a reference to the MazeRunnerGame instance.
+     * This constructor initializes the MenuScreen with a reference to the MazeRunnerGame instance.
      * It sets up the camera and viewport to define how the game's UI is projected onto the screen.
      * A new stage is created with the specified viewport and the game's batch for drawing.
      * Additionally, the constructor calls methods to add a background image and interactive buttons
-     * to the victory screen. This setup ensures that the victory screen is ready to display with all
-     * necessary UI elements when the player wins the game.
+     * to the menu screen. This setup ensures that the menu screen is ready to display with all
+     * necessary UI elements when the game starts or when the menu is accessed.
      * </p>
      *
      * @param game The MazeRunnerGame instance this menu screen is a part of. This is used to access
@@ -48,7 +48,7 @@ public class VictoryScreen implements Screen {
      * @see FillViewport
      * @see Stage
      */
-    public VictoryScreen(MazeRunnerGame game) {
+    public MenuScreen(MazeRunnerGame game) {
         this.game = game;
         camera = new OrthographicCamera();
         viewport = new FillViewport(Gdx.graphics.getWidth() * 1.5f, Gdx.graphics.getHeight() * 1.5f, camera);
@@ -62,14 +62,15 @@ public class VictoryScreen implements Screen {
     }
 
     /**
-     * Renders the victory screen.
+     * Renders the menu screen.
      * <p>
-     * This method is an override of the render function used to draw the victory screen.
+     * This method is an override of the render function used to draw the menu screen.
      * It primarily deals with rendering UI elements like buttons. The method clears the screen
      * and then updates and draws the stage, which contains the UI elements. The {@code stage.act}
-     * method is called with a delta time, which updates the state of the UI elements.
-     * Following this, {@code stage.draw} is used to render the UI elements on the screen.
-     * This method ensures that the victory screen is appropriately updated and drawn at each frame refresh.
+     * method is called with a delta time (capped at a maximum to avoid large time jumps),
+     * which updates the state of the UI elements. Following this, {@code stage.draw} is used
+     * to render the UI elements on the screen. This method ensures that the menu screen is
+     * appropriately updated and drawn at each frame refresh.
      * </p>
      *
      * @param delta The time span between the current and last frame in seconds, used for updating
@@ -83,15 +84,15 @@ public class VictoryScreen implements Screen {
     }
 
     /**
-     * Adds a background image to the victory screen.
+     * Adds a background image to the menu screen.
      * <p>
-     * This method loads and sets a background image for the victory screen. The image is obtained
-     * from the assets folder ("victory_screen_background.png"). The image is set to fill
-     * the entire screen, ensuring that it covers the victory screen's full area.
+     * This method loads and sets a background image for the menu screen. The image is obtained
+     * from the specified file path ("menu_screen_background.png"). The image is set to fill
+     * the entire screen, ensuring that it covers the menu screen's full area.
      * </p>
      */
     private void addBackgroundImage() {
-        backgroundTexture = new Texture(Gdx.files.internal("victory_screen_background.png"));      // the image is generated by an AI
+        backgroundTexture = new Texture(Gdx.files.internal("menu_screen_background.png"));      // the image is generated by an AI
         Image background = new Image(backgroundTexture);
         background.setName("background");
         background.setFillParent(true);
@@ -100,18 +101,19 @@ public class VictoryScreen implements Screen {
     }
 
     /**
-     * Adds interactive buttons to the victory screen.
+     * Adds interactive buttons to the menu screen.
      * <p>
-     * This method sets up and adds UI elements, particularly buttons, to the victory screen.
+     * This method sets up and adds UI elements, particularly buttons, to the menu screen.
      * The buttons include:
      * <ul>
-     *     <li>'Play Again' button: Allows the player to play the same level again.</li>
-     *     <li>'Choose New Map' button: Allows the player to choose a map file and start the game in initial state.</li>
-     *     <li>'Go to Main Menu' button: Allows the player to go back to the menu screen.</li>
+     *     <li>'Play Game' button: Allows the player to choose a map file and start the game.
+     *         This button triggers a file chooser for selecting the map and then transitions
+     *         the game to the gameplay screen.</li>
+     *     <li>'Exit Game' button: Closes the game application.</li>
      * </ul>
-     * The method also adds a label to inform the player what state the game is in.
-     * The buttons and label are organized within a table layout for consistent and manageable positioning.
-     * Listeners are attached to the buttons to handle the respective actions when they are clicked.
+     * The method also adds a welcome label to the screen. The buttons and label are organized
+     * within a table layout for consistent and manageable positioning. Listeners are attached
+     * to the buttons to handle the respective actions when they are clicked.
      * </p>
      *
      * @see NativeFileChooserConfiguration
@@ -123,29 +125,19 @@ public class VictoryScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
 
-        // add a title
-        table.add(new Label("Victory!", game.getSkin(), "title")).padBottom(80).row();
+        // add a welcome text(label) to table
+        table.add(new Label("Welcome to the Maze Runner", game.getSkin(), "title")).padBottom(80).row();
 
         // set default padding for buttons
         table.defaults().padBottom(20);
 
-        // create a button to replay the current map
-        TextButton playAgainButton = new TextButton("Play Again", game.getSkin());
-        table.add(playAgainButton).width(400).row();
-        playAgainButton.addListener(new ChangeListener() {
+        // Create and add buttons to enter the game interface
+        TextButton goToGameButton = new TextButton("Play Game", game.getSkin());
+        table.add(goToGameButton).width(300).row();
+        goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.goToGame();
-            }
-        });
-
-        // create a button to choose a new map
-        TextButton chooseNewMapButton = new TextButton("Choose New Map", game.getSkin());
-        table.add(chooseNewMapButton).width(400).row();
-        NativeFileChooserConfiguration conf = FileChooserHelper.mapChooserConfiguration();
-        chooseNewMapButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
+                NativeFileChooserConfiguration conf = FileChooserHelper.mapChooserConfiguration();
                 game.getFileChooser().chooseFile(conf, new NativeFileChooserCallback() {
                     @Override
                     public void onFileChosen(FileHandle file) {
@@ -160,23 +152,22 @@ public class VictoryScreen implements Screen {
 
                     @Override
                     public void onError(Exception exception) {
-
+                        System.out.println(exception);
                     }
                 });
             }
         });
 
-        // create a button to go back to main menu
-        TextButton backToMenuButton = new TextButton("Back to Main Menu", game.getSkin());
-        table.add(backToMenuButton).width(400).row();
-        backToMenuButton.addListener(new ChangeListener() {
+        // Create and add a button to exit the game
+        TextButton exitButton = new TextButton("Exit Game", game.getSkin());
+        table.add(exitButton).width(300).row();
+        exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.gotoMenu();
+                Gdx.app.exit();
             }
         });
     }
-
 
     /**
      * Sets up the input processor when the screen is shown.
@@ -259,7 +250,7 @@ public class VictoryScreen implements Screen {
     }
 
     /**
-     * Disposes of the resources used by the VictoryScreen.
+     * Disposes of the resources used by the MenuScreen.
      * <p>
      * This method is called when the MenuScreen is no longer needed and is being removed from memory.
      * It ensures that the resources, particularly the stage and the background texture, are properly
@@ -270,5 +261,6 @@ public class VictoryScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        backgroundTexture.dispose();
     }
 }

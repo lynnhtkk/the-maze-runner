@@ -1,4 +1,4 @@
-package de.tum.cit.ase.maze;
+package de.tum.cit.ase.maze.helpers;
 
 import com.badlogic.gdx.Gdx;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;

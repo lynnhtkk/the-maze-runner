@@ -3,7 +3,7 @@
  * for updating its state, drawing on the screen, and managing its properties such as position
  * and animation.
  */
-package de.tum.cit.ase.maze;
+package de.tum.cit.ase.maze.buffs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -122,6 +122,14 @@ public class CollectableHearts {
 
     public Animation<TextureRegion> getHeartAnimation() {
         return heartAnimation;
+    }
+
+    public Array<TextureRegion> getAnimationFrames() {
+        return animationFrames;
+    }
+
+    public void setAnimationFrames(Array<TextureRegion> animationFrames) {
+        this.animationFrames = animationFrames;
     }
 
     public void setHeartAnimation(Animation<TextureRegion> heartAnimation) {

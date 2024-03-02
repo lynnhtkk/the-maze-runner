@@ -6,6 +6,12 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import de.tum.cit.ase.maze.constants.GameState;
+import de.tum.cit.ase.maze.helpers.GameOverScreen;
+import de.tum.cit.ase.maze.screens.GameScreen;
+import de.tum.cit.ase.maze.screens.MenuScreen;
+import de.tum.cit.ase.maze.screens.PauseScreen;
+import de.tum.cit.ase.maze.screens.VictoryScreen;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 
 /**

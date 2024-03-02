@@ -1,4 +1,4 @@
-package de.tum.cit.ase.maze;
+package de.tum.cit.ase.maze.entities;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 

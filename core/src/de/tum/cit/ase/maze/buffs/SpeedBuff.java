@@ -3,7 +3,7 @@
  * for updating its state, drawing on the screen, and managing its properties such as position
  * and animation.
  */
-package de.tum.cit.ase.maze;
+package de.tum.cit.ase.maze.buffs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

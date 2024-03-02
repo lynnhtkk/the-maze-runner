@@ -2,10 +2,12 @@
 
 # Introduction
 
-**Maze Runner** is a captivating and challenging top-down pixel-themed game where players have to navigate through complex mazes. 
+**Maze Runner** is a captivating and challenging top-down pixel-themed game, developed using Java and LibGDX framework, where players have to navigate through complex mazes. 
 With a limited number of lives (3 to be exact), players must strategically maneuver their character, 
 collecting a key and finding their way to the exit to claim victory. 
 The game presents an exciting blend of exploration and strategy, set in a visually appealing pixel world.
+
+This game is my Project for the first semester at TUM Campus Heilbronn, BIE.
 
 ## Game Mechanics
 
@@ -128,7 +130,6 @@ If you want to execute your freshly imported project, you have to follow differe
 
 ## Team Members
 - [Nyi Nyi Linn Htet](https://github.com/lynnhtkk)
-- [Hejunjie Cao](https://github.com/hejunjiecao)
 
 ## Acknowledgments
 - **TileSets** and **Animated Entites**
