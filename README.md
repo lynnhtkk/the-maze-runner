@@ -9,6 +9,8 @@ The game presents an exciting blend of exploration and strategy, set in a visual
 
 This game is my Project for the first semester at TUM Campus Heilbronn, BIE.
 
+![demo](screenshots/final_demo.gif)
+
 ## Game Mechanics
 
 ### Navigation and Objective
@@ -130,6 +132,9 @@ If you want to execute your freshly imported project, you have to follow differe
 
 ## Team Members
 - [Nyi Nyi Linn Htet](https://github.com/lynnhtkk)
+
+## Contributors
+- [Hejunjie Cao](https://github.com/hejunjiecao)
 
 ## Acknowledgments
 - **TileSets** and **Animated Entites**
